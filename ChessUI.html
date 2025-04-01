@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chessboard</title>
+    <link rel="stylesheet" href="CSS/chessBuilder.css">
+</head>
+
+<body>
+    <h1>Chess Game</h1>
+
+    <div id="chessboard-wrapper">
+        <div id="letters">
+            <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+        </div>
+        <div id="chessboard">
+            <!-- The chessboard squares will be dynamically added here -->
+        </div>
+        <div id="numbers">
+            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const board = document.getElementById("chessboard");
+            let chessboardArray = [];  // 2D array to store references to squares
+
+            // Create the chessboard grid and store references in the 2D array
+            for (let row = 0; row < 8; row++) {
+                let rowArray = []; // Temporary array for the current row
+                for (let col = 0; col < 8; col++) {
+                    const square = document.createElement("div");
+                    square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark");
+                    square.dataset.row = row;   // Store row in the div
+                    square.dataset.col = col;   // Store column in the div
+                    board.appendChild(square);
+                    rowArray.push(square);  // Add the square to the current row array
+                }
+                chessboardArray.push(rowArray);  // Add the row array to the main chessboard array
+            }
+
+            // Now, you can access any square using the chessboardArray
+            // Example: Access square at row 0, col 0 (a1)
+            let a1Square = chessboardArray[0][0]; // Row 0, Column 0 (a1)
+            console.log(a1Square);  // It will log the div element for a1
+
+            // Example: Access square at row 7, col 7 (h8)
+            let h8Square = chessboardArray[7][7]; // Row 7, Column 7 (h8)
+            console.log(h8Square);  // It will log the div element for h8
+        });
+    </script>
+</body>
+
+</html>

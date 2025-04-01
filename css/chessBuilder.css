@@ -1,0 +1,79 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;  /* Keep title at the top */
+    height: 100vh;
+    background-color: #f0d9b5;
+    margin: 0;
+}
+
+h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #333;
+    text-align: center;  /* Center the title */
+}
+
+#chessboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+#letters {
+    display: flex;
+    justify-content: space-between;
+    width: 400px;  /* Adjust the width to match the new chessboard size */
+    margin-bottom: 5px;
+}
+
+#letters span {
+    font-size: 18px;
+    font-weight: bold;
+    width: 30px;
+    text-align: center;
+}
+
+#chessboard-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+#numbers {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    margin-right: 5px;
+}
+
+#numbers span {
+    font-size: 18px;
+    font-weight: bold;
+    height: 50px;  /* Adjust the height of numbers to match the chessboard size */
+    text-align: center;
+}
+
+#chessboard {
+    display: grid;
+    width: 400px;  /* Chessboard width (reduced size) */
+    height: 400px; /* Chessboard height (reduced size) */
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
+    border: 4px solid black;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.3);
+}
+
+.square {
+    width: 100%;
+    height: 100%;
+}
+
+.light {
+    background-color: #f0d9b5; /* Light beige */
+}
+
+.dark {
+    background-color: #769656; /* Dark green */
+}
