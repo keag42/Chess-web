@@ -24,7 +24,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 const clickedCol = parseInt(this.dataset.col);
                 const chessNotation = String.fromCharCode(97 + clickedCol) + (clickedRow + 1);
 
-                console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
+                // console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
+                console.log(`[${clickedRow}, ${clickedCol}]`)
                 movePiece(clickedRow, clickedCol, clickedRow+1, clickedCol, square);
             });
 
@@ -78,8 +79,10 @@ function movePiece(currentRow, currentCol, targetRow, targetCol) {
         console.log("No piece to move!");
         return;
     }
+
     if(targetSquare.querySelector("img")) { //checks if it is empty
         console.log("Target square is occupied!");
+        console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
         return;
     }
 
@@ -91,3 +94,11 @@ function movePiece(currentRow, currentCol, targetRow, targetCol) {
     console.log(`Moved piece from [${currentRow}, ${currentCol}] to [${targetRow}, ${targetCol}]`);
 }
 
+
+//maybe>>???
+function isEnemy(){
+    if(targetSquare.querySelector("img")) { //checks if it is empty
+        console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
+
+    }
+}
