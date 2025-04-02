@@ -24,11 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const clickedRow = parseInt(this.dataset.row);
                 const clickedCol = parseInt(this.dataset.col);
                 const chessNotation = String.fromCharCode(97 + clickedCol) + (clickedRow + 1);
-                while(true) {
-                    console.log(`are you sure this is the piece you would like to move? : ${chessNotation}`);
-                    //todo write  method to check and confirm and send back to here
-                    break;
-                }
+
                 console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
                 window.tileX = clickedCol;
                 window.tileY = clickedRow;
@@ -59,11 +55,11 @@ function generatePieces(row, col, square) {
     // Check if the row has a piece setup
 
     if (pieces[row]) {
-        //testing
-        //console.log("piece: " + pieces[row]);
-        //console.log("row: " + row);
-        console.log(`[${row}][${col}]: ` + pieces[row][col]);
-        // - ---- ----- ----\testing
+        //   testing
+            //console.log("piece: " + pieces[row]);
+            //console.log("row: " + row);
+            //console.log(`[${row}][${col}]: ` + pieces[row][col]);
+        //   \testing
         const piece = pieces[row][col];
         if (piece) {
             const img = document.createElement("img");
