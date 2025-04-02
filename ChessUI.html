@@ -57,14 +57,28 @@
             console.log(h8Square);  // It will log the div element for h8
         });
 
+
         function generatePieces(row, col, square) {
-            if (row === 0 && col === 4) {
-                const img = document.createElement("img");
-                img.src = "../css/img/king-B.svg";  // Image path
-                img.alt = "King";  // Alt text for the image
-                square.appendChild(img);  // Append the image to the square
+            // Define piece setup for both white and black pieces
+            const pieces = {
+                0: ["rook-W", "horse-W", "bishop-W", "queen-W", "king-W", "bishop-W", "horse-W", "rook-W"],  // White pieces row (0)
+                1: ["pawn-W", "pawn-W", "pawn-W", "pawn-W", "pawn-W", "pawn-W", "pawn-W", "pawn-W"],          // White pawns row (1)
+                6: ["pawn-B", "pawn-B", "pawn-B", "pawn-B", "pawn-B", "pawn-B", "pawn-B", "pawn-B"],          // Black pawns row (6)
+                7: ["rook-B", "horse-B", "bishop-B", "queen-B", "king-B", "bishop-B", "horse-B", "rook-B"],  // Black pieces row (7)
+            };
+
+            // Check if the row has a piece setup
+            if (pieces[row]) {
+                const piece = pieces[row][col];
+                if (piece) {
+                    const img = document.createElement("img");
+                    img.src = `../css/img/${piece}.svg`;  // Image path based on piece name
+                    img.alt = piece.split("-")[1];  // Alt text as the piece color (W/B)
+                    square.appendChild(img);  // Append the image to the square
+                }
             }
         }
+
     </script>
 </body>
 
