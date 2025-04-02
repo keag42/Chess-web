@@ -11,7 +11,7 @@ class Pieces{
         this.isWhiteSide = isWhiteSide;
     // move count //todo should i add  ?
    }
-   getPiecePosition = () =>  [this.positionX, this.positionY]; // 2 ints
+   getPiecePosition = () =>  [this.positionX, this.positionY]; // 2 intsr
    getName = () =>  this.name; //string
    getIsWhiteSide = () =>  this.isWhiteSide; //boolean
 
