@@ -23,17 +23,22 @@ h1 {
 
 #letters {
     display: flex;
-    justify-content: space-between;
-    width: 400px;  /* Adjust the width to match the new chessboard size */
+    justify-content: left;
+    margin-left: 25px; /*makes it aligned with squares*/
+    width: 408px;  /* Adjust the width to match the new chessboard size */
     margin-bottom: 5px;
+    font-weight: bold;
+    font-size: 16px;
+    height: 30px;
+}
+#letterLI li {
+    display: inline-block;
+    margin-right: 35px; /* Adjust spacing */
+}
+#letterLI li:nth-child(8) {
+    margin-right: 0;
 }
 
-#letters span {
-    font-size: 18px;
-    font-weight: bold;
-    width: 30px;
-    text-align: center;
-}
 
 #chessboard-container {
     display: flex;

@@ -14,14 +14,33 @@
     <h1>Chess Game</h1>
 
     <div id="chessboard-wrapper">
+        <!-- Letters (top) -->
         <div id="letters">
-            <span>a</span><span>b</span><span>c</span><span>d</span><span>e</span><span>f</span><span>g</span><span>h</span>
+            <ol id="letterLI">
+                <li>A</li>
+                <li>B</li>
+                <li>C</li>
+                <li>D</li>
+                <li>E</li>
+                <li>F</li>
+                <li>G</li>
+                <li>H</li>
+            </ol>
         </div>
-        <div id="chessboard">
-            <!-- The chessboard squares will be dynamically added here -->
-        </div>
-        <div id="numbers">
-            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span>
+
+        <!-- Chessboard + Numbers (side) -->
+        <div id="chessboard-container">
+            <div id="numbers">
+                    <ol>1</ol>
+                    <ol>2</ol>
+                    <ol>3</ol>
+                    <ol>4</ol>
+                    <ol>5</ol>
+                    <ol>6</ol>
+                    <ol>7</ol>
+                    <ol>8</ol>
+            </div>
+            <div id="chessboard"></div>
         </div>
     </div>
 
