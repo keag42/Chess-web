@@ -78,6 +78,10 @@ function movePiece(currentRow, currentCol, targetRow, targetCol) {
         console.log("No piece to move!");
         return;
     }
+    if(targetSquare.querySelector("img")) { //checks if it is empty
+        console.log("Target square is occupied!");
+        return;
+    }
 
     // Remove the piece from the source square
     sourceSquare.removeChild(pieceImage);
