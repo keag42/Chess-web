@@ -77,7 +77,10 @@ class ChessBoard {
             let positions = [];
             for (let col = 0; col < 8; col++) {
                 this.board[row][col] = `${color}_${pieceName}${col + 1}`;
+                //add image to spot
+
                 console.log(`${color}_${pieceName}${col + 1}`);
+                //test ^-^
                 positions.push([row, col]);
             }
             return positions;
