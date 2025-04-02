@@ -1,3 +1,4 @@
+
 document.addEventListener("DOMContentLoaded", () => {
     const board = document.getElementById("chessboard");
     let chessboardArray = [];  // 2D array to store references to squares
@@ -17,6 +18,22 @@ document.addEventListener("DOMContentLoaded", () => {
             square.dataset.col = col;   // Store column in the div
             board.appendChild(square);
             rowArray.push(square);  // Add the square to the current row array
+
+            square.addEventListener('click', function() {
+
+                const clickedRow = parseInt(this.dataset.row);
+                const clickedCol = parseInt(this.dataset.col);
+                const chessNotation = String.fromCharCode(97 + clickedCol) + (clickedRow + 1);
+                while(true) {
+                    console.log(`are you sure this is the piece you would like to move? : ${chessNotation}`);
+                    //todo write  method to check and confirm and send back to here
+                    break;
+                }
+                console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
+                window.tileX = clickedCol;
+                window.tileY = clickedRow;
+            });
+
         }
         chessboardArray.push(rowArray);  // Add the row array to the main chessboard array
     }
