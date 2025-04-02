@@ -1,7 +1,6 @@
-
+let chessboardArray = [];  // Declare it globally
 document.addEventListener("DOMContentLoaded", () => {
     const board = document.getElementById("chessboard");
-    let chessboardArray = [];  // 2D array to store references to squares
 
     // Create the chessboard grid and store references in the 2D array
     for (let row = 0; row < 8; row++) {
@@ -26,8 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const chessNotation = String.fromCharCode(97 + clickedCol) + (clickedRow + 1);
 
                 console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
-                window.tileX = clickedCol;
-                window.tileY = clickedRow;
+                movePiece(clickedRow, clickedCol, clickedRow+1, clickedCol, square);
             });
 
         }
@@ -69,3 +67,23 @@ function generatePieces(row, col, square) {
         }
     }
 }
+
+function movePiece(currentRow, currentCol, targetRow, targetCol) {
+    const sourceSquare = chessboardArray[currentRow][currentCol];
+    const targetSquare = chessboardArray[targetRow][targetCol];
+
+    // Get the image element from the source square
+    const pieceImage = sourceSquare.querySelector("img");
+    if (!pieceImage) {
+        console.log("No piece to move!");
+        return;
+    }
+
+    // Remove the piece from the source square
+    sourceSquare.removeChild(pieceImage);
+
+    // Append the piece to the target square
+    targetSquare.appendChild(pieceImage);
+    console.log(`Moved piece from [${currentRow}, ${currentCol}] to [${targetRow}, ${targetCol}]`);
+}
+
