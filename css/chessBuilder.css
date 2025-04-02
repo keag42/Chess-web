@@ -46,14 +46,9 @@ h1 {
     flex-direction: column;
     justify-content: space-between;
     margin-right: 5px;
+    font-weight: bold;
 }
 
-#numbers span {
-    font-size: 18px;
-    font-weight: bold;
-    height: 50px;  /* Adjust the height of numbers to match the chessboard size */
-    text-align: center;
-}
 
 #chessboard {
     display: grid;
