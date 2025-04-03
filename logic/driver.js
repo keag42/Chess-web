@@ -160,6 +160,32 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         }, 5);// adds timer so that you dont click the pawn at the same time
     });
 
+    const rightAttack = chessboardArray[currentRow + 1][currentCol + 1];
+    console.log(rightAttack);
+    var rightAttackElement;
+    if (chessboardArray[currentRow + 1][currentCol + 1].querySelector("img")) {//opposite if there is a piece there
+        // If there's no piece in front, it's a valid move
+        rightAttackElement = document.createElement("img");  // Create an <img> element
+        rightAttackElement.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
+        rightAttackElement.alt = "move";
+        rightAttackElement.style.width = "45px";  // Set width to 50px
+        rightAttackElement.style.height = "45px"
+        rightAttack.appendChild(rightAttackElement);  // Append the image to the square
+        // Append the image to the square
+
+
+        rightAttackElement.addEventListener('click', function () {
+            console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol + 1}]`);
+            // Remove the move indicator
+            rightAttack.removeChild(rightAttackElement); // this removes the indicator on the square
+            setTimeout(() => {
+                rightAttack.appendChild(pawn);
+                console.log("Pawn moved after delay..");
+            }, 5);// adds timer so that you don't click the pawn at the same time
+
+        });
+    }
+
 
 
     //VERy very temporary test isEnemy() only in this scope //todo refactor this when there's a chance
