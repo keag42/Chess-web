@@ -71,9 +71,9 @@ function generatePieces(row, col, square) {
         }
     }
 }
-
 //Helper Function Selected Piece, when you select a piece it will start the process of finding its moves
 function selectedPiece(currentRow, currentCol, square) {
+
     const sourceSquare = chessboardArray[currentRow][currentCol];
     let pieceName;
     let color;
@@ -133,33 +133,32 @@ function isEnemy(targetRow, targetCol){
 
 function pawnMove(currentRow, currentCol, sourceSquare, square) {
     let isWhite = chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
-    //  i dont need?? //let currentSquare = chessboardArray[currentRow][currentCol];
+    const pawn = chessboardArray[currentRow][currentCol].querySelector("img");
 
-    let moveForward = chessboardArray[currentRow + 1][currentCol].querySelector("img");
-    if (!moveForward) {
+    const forwardMove = chessboardArray[currentRow + 1][currentCol];
+    var forwardMoveElement;
+    if (!chessboardArray[currentRow + 1][currentCol].querySelector("img")) {
         // If there's no piece in front, it's a valid move
-        const img = document.createElement("img");  // Create an <img> element
-        img.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
-        img.alt = "move";
-        img.style.width = "45px";  // Set width to 50px
-        img.style.height = "45px"
-        chessboardArray[currentRow + 1][currentCol].appendChild(img);  // Append the image to the square
+        forwardMoveElement = document.createElement("img");  // Create an <img> element
+        forwardMoveElement.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
+        forwardMoveElement.alt = "move";
+        forwardMoveElement.style.width = "45px";  // Set width to 50px
+        forwardMoveElement.style.height = "45px"
+        forwardMove.appendChild(forwardMoveElement);  // Append the image to the square
+        // Append the image to the square
 
-        img.addEventListener('click', function() {
-            console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol}]`);
-            // Handle the move or any other action you want to trigger when the circle is clicked
-            //todo work on logic
-        });
     }
 
 
-    //maybe i should check if its empty and if so check the attack else dont
-        // let targetLeftAttack = chessboardArray[currentRow + 1][currentCol - 1];
-        // let leftAttack = !(targetLeftAttack.querySelector("img") && isEnemy(currentSquare, targetLeftAttack)); //check's Attack-Left
-
-        // let targetRightAttack = chessboardArray[currentRow + 1][currentCol + 1];
-        // let rightAttack = targetRightAttack.querySelector("img"); //check's Attack-Right
-
+    forwardMoveElement.addEventListener('click', function() {
+        console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol}]`);
+        // Remove the move indicator
+        forwardMove.removeChild(forwardMoveElement); // this removes the indicator on the square
+        setTimeout(() => {
+            forwardMove.appendChild(pawn);
+            console.log("Pawn moved after delay..");
+        }, 5);// adds timer so that you dont click the pawn at the same time
+    });
 
 
 
