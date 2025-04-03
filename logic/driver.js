@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const chessNotation = String.fromCharCode(97 + clickedCol) + (clickedRow + 1);
 
                 // console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
-                console.log(`[${clickedRow}, ${clickedCol}]`)
+                //console.log(`Current place: [${clickedRow}, ${clickedCol}]`)
                 movePiece(clickedRow, clickedCol, clickedRow+1, clickedCol, square);
             });
 
@@ -112,9 +112,41 @@ function movePiece(currentRow, currentCol, targetRow, targetCol) {
 
 
 //maybe>>???
-function isEnemy(){
+function isEnemy(targetRow, targetCol){
+    const targetSquare = chessboardArray[targetRow][targetCol];
     if(targetSquare.querySelector("img")) { //checks if it is empty
         console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
+    }
+}
+
+function pawnMove(currentRow, currentCol) {
+    let isWhite = chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
+
+    let currentSquare = chessboardArray[currentRow][currentCol];
+    //true if something is there
+    let targetPieceF1 = chessboardArray[currentRow + 1][currentCol].querySelector("img"); //check's 1-Forward
+    let ValidfowardMove1 = targetPieceF1.querySelector("img"); //check's 1-Forward
+
+    //maybe i shold check if its empty and if so check the attack else dont
+    let targetLeftAttack = chessboardArray[currentRow + 1][currentCol - 1];
+    let leftAttack = !(targetLeftAttack.querySelector("img") && isEnemy(currentSquare, targetLeftAttack)); //check's Attack-Left
+
+    let targetRightAttack = chessboardArray[currentRow + 1][currentCol + 1];
+    let rightAttack = targetRightAttack.querySelector("img"); //check's Attack-Right
+
+
+    //VERy very temporary test isEnemy() only in this scope //todo refactor this when there's a chance
+    function isEnemy(currentSquare, targetSquare) {
+        let currentPiece = currentSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
+        let targetPiece = targetSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
+        if(currentPiece === targetPiece) {
+            console.log("Same Team!");
+            return false;
+        }
+        else if(currentPiece !== targetPiece) {
+            console.log("is enemy!");
+            return false;
+        }
 
     }
 }
