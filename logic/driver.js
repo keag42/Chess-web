@@ -37,11 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     let a1Square = chessboardArray[0][0]; // Row 0, Column 0 (a1)
-    console.log(a1Square);  // It will log the div element for a1
+    //console.log(a1Square);  // It will log the div element for a1
 
     // Example: Access square at row 7, col 7 (h8)
     let h8Square = chessboardArray[7][7]; // Row 7, Column 7 (h8)
-    console.log(h8Square);  // It will log the div element for h8
+   // console.log(h8Square);  // It will log the div element for h8
 });
 
 
@@ -122,7 +122,6 @@ function selectedPiece(currentRow, currentCol, square) {
     }
 }
 
-
 //maybe>>???
 function isEnemy(targetRow, targetCol){
     const targetSquare = chessboardArray[targetRow][targetCol];
@@ -130,6 +129,8 @@ function isEnemy(targetRow, targetCol){
         console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
     }
 }
+
+
 
 function pawnMove(currentRow, currentCol, sourceSquare, square) {
     let isWhite = chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
@@ -158,18 +159,7 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
     }
 
 
-    forwardMoveElement.addEventListener('click', function() {
-        console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol}]`);
-        // Remove the move indicator
-        forwardMove.removeChild(forwardMoveElement); // this removes the indicator on the square
-        setTimeout(() => {
-            forwardMove.appendChild(pawn);
-            console.log("Pawn moved after delay..");
-        }, 5);// adds timer so that you dont click the pawn at the same time
-    });
-
     const rightAttack = chessboardArray[currentRow + 1][currentCol + 1];
-    console.log(rightAttack);
     var rightAttackElement;
     if (chessboardArray[currentRow + 1][currentCol + 1].querySelector("img")) {//opposite if there is a piece there
         // If there's no piece in front, it's a valid move
@@ -212,43 +202,49 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         // }
 }
 
-function movePiece(currentRow, currentCol, targetRow, targetCol) {
-    const sourceSquare = chessboardArray[currentRow][currentCol];
-    const targetSquare = chessboardArray[targetRow][targetCol];
+/*
+    function movePiece(currentRow, currentCol, targetRow, targetCol) {
+        const sourceSquare = chessboardArray[currentRow][currentCol];
+        const targetSquare = chessboardArray[targetRow][targetCol];
 
-    // Get the image element from the source square
-    const pieceImage = sourceSquare.querySelector("img");
-    if (!pieceImage) {
-        console.log("No piece to move!");
-        return;
-    }
-
-    if(targetSquare.querySelector("img")) { //checks if it is empty
-        console.log("Target square is occupied!");
-        // -testing-
-        const imageEl = targetSquare.querySelector("img");
-        if (imageEl) {
-            const src = imageEl.src;
-            const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
-            // This regex captures the piece name and a single letter for color (W or B)
-            const match = fileName.match(/^(.*)-([WB])\.svg$/);
-            if(match) {
-                const pieceName = match[1];
-                const color = match[2];
-                console.log(color === "W" ? "White" : "Black",  pieceName, `[${targetRow}, ${targetCol}]`);
-            } else {
-                console.error("Filename does not match expected pattern:", fileName);
-            }
+        // Get the image element from the source square
+        const pieceImage = sourceSquare.querySelector("img");
+        if (!pieceImage) {
+            console.log("No piece to move!");
+            return;
         }
 
-        // ^testing^
-        return;
-    }
+        if(targetSquare.querySelector("img")) { //checks if it is empty
+            console.log("Target square is occupied!");
+            // -testing-
+            const imageEl = targetSquare.querySelector("img");
+            if (imageEl) {
+                const src = imageEl.src;
+                const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
+                // This regex captures the piece name and a single letter for color (W or B)
+                const match = fileName.match(/^(.*)-([WB])\.svg$/);
+                if(match) {
+                    const pieceName = match[1];
+                    const color = match[2];
+                    console.log(color === "W" ? "White" : "Black",  pieceName, `[${targetRow}, ${targetCol}]`);
+                } else {
+                    console.error("Filename does not match expected pattern:", fileName);
+                }
+            }
+
+            // ^testing^
+            return;
+        }
 
     // Remove the piece from the source square
     sourceSquare.removeChild(pieceImage);
 
-    // Append the piece to the target square
-    targetSquare.appendChild(pieceImage);
-    console.log(`Moved piece from [${currentRow}, ${currentCol}] to [${targetRow}, ${targetCol}]`);
-}
+        // Remove the piece from the source square
+        sourceSquare.removeChild(pieceImage);
+
+        // Append the piece to the target square
+        targetSquare.appendChild(pieceImage);
+        console.log(`Moved piece from [${currentRow}, ${currentCol}] to [${targetRow}, ${targetCol}]`);
+    }
+
+ */
