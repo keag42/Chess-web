@@ -26,7 +26,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
                 //console.log(`Current place: [${clickedRow}, ${clickedCol}]`)
-                movePiece(clickedRow, clickedCol, clickedRow+1, clickedCol, square);
+
+                //movePiece(clickedRow, clickedCol, clickedRow+1, clickedCol, square);
+                selectedPiece(clickedRow, clickedCol, square);
+
             });
 
         }
@@ -69,6 +72,113 @@ function generatePieces(row, col, square) {
     }
 }
 
+//Helper Function Selected Piece, when you select a piece it will start the process of finding its moves
+function selectedPiece(currentRow, currentCol, square) {
+    const sourceSquare = chessboardArray[currentRow][currentCol];
+    let pieceName;
+    let color;
+    if(sourceSquare.querySelector("img")) { //checks if not empty
+        // -testing-
+        const imageEl = sourceSquare.querySelector("img");
+        if (imageEl) {
+            const src = imageEl.src;
+            const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
+            // This regex captures the piece name and a single letter for color (W or B)
+            const match = fileName.match(/^(.*)-([WB])\.svg$/);
+            if(match) {
+                pieceName = match[1]; //gets piece Name
+                color = match[2];
+            } else {
+                console.error("Filename does not match expected pattern:", fileName);
+            }
+
+        } //gets piece name & color and saves them
+        // ^testing^
+    }
+
+    if(pieceName == "pawn"){
+        console.log("Pawn selected");
+        pawnMove(currentRow, currentCol, sourceSquare, square);
+    }
+    else if(pieceName == "rook"){
+        console.log("Rook selected");
+        //todo add rook method
+    }
+    else if(pieceName == "horse"){
+        console.log("HORSE selected");
+        //todo add horse method
+    }
+    else if(pieceName == "bishop"){
+        console.log("Bishop selected");
+        //todo add bishop method
+    }
+    else if(pieceName == "king"){
+        console.log("King selected");
+        //todo add king method
+    }
+    else if(pieceName == "queen"){
+        console.log("Queen selected");
+        //todo add queen method
+    }
+}
+
+
+//maybe>>???
+function isEnemy(targetRow, targetCol){
+    const targetSquare = chessboardArray[targetRow][targetCol];
+    if(targetSquare.querySelector("img")) { //checks if it is empty
+        console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
+    }
+}
+
+function pawnMove(currentRow, currentCol, sourceSquare, square) {
+    let isWhite = chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
+    //  i dont need?? //let currentSquare = chessboardArray[currentRow][currentCol];
+
+    let moveForward = chessboardArray[currentRow + 1][currentCol].querySelector("img");
+    if (!moveForward) {
+        // If there's no piece in front, it's a valid move
+        const img = document.createElement("img");  // Create an <img> element
+        img.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
+        img.alt = "move";
+        img.style.width = "45px";  // Set width to 50px
+        img.style.height = "45px"
+        chessboardArray[currentRow + 1][currentCol].appendChild(img);  // Append the image to the square
+
+        img.addEventListener('click', function() {
+            console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol}]`);
+            // Handle the move or any other action you want to trigger when the circle is clicked
+            //todo work on logic
+        });
+    }
+
+
+    //maybe i should check if its empty and if so check the attack else dont
+        // let targetLeftAttack = chessboardArray[currentRow + 1][currentCol - 1];
+        // let leftAttack = !(targetLeftAttack.querySelector("img") && isEnemy(currentSquare, targetLeftAttack)); //check's Attack-Left
+
+        // let targetRightAttack = chessboardArray[currentRow + 1][currentCol + 1];
+        // let rightAttack = targetRightAttack.querySelector("img"); //check's Attack-Right
+
+
+
+
+    //VERy very temporary test isEnemy() only in this scope //todo refactor this when there's a chance
+        // function isEnemy(currentSquare, targetSquare) {
+        //     let currentPiece = currentSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
+        //     let targetPiece = targetSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
+        //     if(currentPiece === targetPiece) {
+        //         console.log("Same Team!");
+        //         return false;
+        //     }
+        //     else if(currentPiece !== targetPiece) {
+        //         console.log("is enemy!");
+        //         return false;
+        //     }
+        //
+        // }
+}
+
 function movePiece(currentRow, currentCol, targetRow, targetCol) {
     const sourceSquare = chessboardArray[currentRow][currentCol];
     const targetSquare = chessboardArray[targetRow][targetCol];
@@ -83,20 +193,20 @@ function movePiece(currentRow, currentCol, targetRow, targetCol) {
     if(targetSquare.querySelector("img")) { //checks if it is empty
         console.log("Target square is occupied!");
         // -testing-
-            const imageEl = targetSquare.querySelector("img");
-            if (imageEl) {
-                const src = imageEl.src;
-                const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
-                // This regex captures the piece name and a single letter for color (W or B)
-                const match = fileName.match(/^(.*)-([WB])\.svg$/);
-                if(match) {
-                    const pieceName = match[1];
-                    const color = match[2];
-                    console.log(color === "W" ? "White" : "Black",  pieceName, `[${targetRow}, ${targetCol}]`);
-                } else {
-                    console.error("Filename does not match expected pattern:", fileName);
-                }
+        const imageEl = targetSquare.querySelector("img");
+        if (imageEl) {
+            const src = imageEl.src;
+            const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
+            // This regex captures the piece name and a single letter for color (W or B)
+            const match = fileName.match(/^(.*)-([WB])\.svg$/);
+            if(match) {
+                const pieceName = match[1];
+                const color = match[2];
+                console.log(color === "W" ? "White" : "Black",  pieceName, `[${targetRow}, ${targetCol}]`);
+            } else {
+                console.error("Filename does not match expected pattern:", fileName);
             }
+        }
 
         // ^testing^
         return;
@@ -108,45 +218,4 @@ function movePiece(currentRow, currentCol, targetRow, targetCol) {
     // Append the piece to the target square
     targetSquare.appendChild(pieceImage);
     console.log(`Moved piece from [${currentRow}, ${currentCol}] to [${targetRow}, ${targetCol}]`);
-}
-
-
-//maybe>>???
-function isEnemy(targetRow, targetCol){
-    const targetSquare = chessboardArray[targetRow][targetCol];
-    if(targetSquare.querySelector("img")) { //checks if it is empty
-        console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
-    }
-}
-
-function pawnMove(currentRow, currentCol) {
-    let isWhite = chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
-
-    let currentSquare = chessboardArray[currentRow][currentCol];
-    //true if something is there
-    let targetPieceF1 = chessboardArray[currentRow + 1][currentCol].querySelector("img"); //check's 1-Forward
-    let ValidfowardMove1 = targetPieceF1.querySelector("img"); //check's 1-Forward
-
-    //maybe i shold check if its empty and if so check the attack else dont
-    let targetLeftAttack = chessboardArray[currentRow + 1][currentCol - 1];
-    let leftAttack = !(targetLeftAttack.querySelector("img") && isEnemy(currentSquare, targetLeftAttack)); //check's Attack-Left
-
-    let targetRightAttack = chessboardArray[currentRow + 1][currentCol + 1];
-    let rightAttack = targetRightAttack.querySelector("img"); //check's Attack-Right
-
-
-    //VERy very temporary test isEnemy() only in this scope //todo refactor this when there's a chance
-    function isEnemy(currentSquare, targetSquare) {
-        let currentPiece = currentSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
-        let targetPiece = targetSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
-        if(currentPiece === targetPiece) {
-            console.log("Same Team!");
-            return false;
-        }
-        else if(currentPiece !== targetPiece) {
-            console.log("is enemy!");
-            return false;
-        }
-
-    }
 }
