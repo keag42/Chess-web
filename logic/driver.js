@@ -82,7 +82,23 @@ function movePiece(currentRow, currentCol, targetRow, targetCol) {
 
     if(targetSquare.querySelector("img")) { //checks if it is empty
         console.log("Target square is occupied!");
-        console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
+        // -testing-
+            const imageEl = targetSquare.querySelector("img");
+            if (imageEl) {
+                const src = imageEl.src;
+                const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
+                // This regex captures the piece name and a single letter for color (W or B)
+                const match = fileName.match(/^(.*)-([WB])\.svg$/);
+                if(match) {
+                    const pieceName = match[1];
+                    const color = match[2];
+                    console.log(color === "W" ? "White" : "Black",  pieceName, `[${targetRow}, ${targetCol}]`);
+                } else {
+                    console.error("Filename does not match expected pattern:", fileName);
+                }
+            }
+
+        // ^testing^
         return;
     }
 
