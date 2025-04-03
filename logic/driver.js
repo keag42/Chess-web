@@ -146,7 +146,15 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         forwardMoveElement.style.height = "45px"
         forwardMove.appendChild(forwardMoveElement);  // Append the image to the square
         // Append the image to the square
-
+        forwardMoveElement.addEventListener('click', function() {
+            console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol}]`);
+            // Remove the move indicator
+            forwardMove.removeChild(forwardMoveElement); // this removes the indicator on the square
+            setTimeout(() => {
+                forwardMove.appendChild(pawn);
+                console.log("Pawn moved after delay..");
+            }, 5);// adds timer so that you dont click the pawn at the same time
+        });
     }
 
 
