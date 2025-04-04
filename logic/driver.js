@@ -159,31 +159,27 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
     }
 
     const rightAttack = chessboardArray[currentRow + 1][currentCol + 1];
-    var rightAttackElement;
-    if (chessboardArray[currentRow + 1][currentCol + 1].querySelector("img")) { // If there's a piece at the target position
-        // Check if the piece is an enemy
-        const targetSquare = chessboardArray[currentRow + 1][currentCol + 1];
-        if (targetSquare.querySelector("img")) {
-            // Add the red highlight class if it's an enemy piece
-            targetSquare.classList.add("highlight-attack");
-        }
+    if (rightAttack.querySelector("img")) {
+        rightAttack.classList.add("highlight-attack");
 
-        rightAttackElement = chessboardArray[currentRow + 1][currentCol + 1];
-
-        rightAttackElement.addEventListener('click', function () {
+        rightAttack.addEventListener('click', function () {
             console.log(`Move clicked at [${currentRow + 1}, ${currentCol + 1}]`);
+            this.classList.remove("highlight-attack");// Remove the red highlight
+            this.removeChild(rightAttack.querySelector("img"));
+            this.appendChild(pawn); // Move the pawn to the target square
+            console.log("Pawn takes: ");
+        });
+    }
 
-            // Check if the target square already has a piece (enemy or not)
-            if (rightAttack.querySelector("img")) {
-                // Remove any existing piece (if any) from the target square
-                const targetPiece = rightAttack.querySelector("img");
-                rightAttack.removeChild(targetPiece); // Remove the piece from the target square
-            }
+    const leftAttack = chessboardArray[currentRow + 1][currentCol - 1];
+    if (leftAttack.querySelector("img")) {
+        leftAttack.classList.add("highlight-attack");
 
-            rightAttack.appendChild(pawn); // Move the pawn to the target square
-            // Remove the move indicator
-            targetSquare.classList.remove("highlight-attack");// Remove the move indicator
-
+        leftAttack.addEventListener('click', function () {
+            console.log(`Move clicked at [${currentRow + 1}, ${currentCol - 1}]`);
+            this.classList.remove("highlight-attack");// Remove the red highlight
+            this.removeChild(leftAttack.querySelector("img"));
+            this.appendChild(pawn); // Move the pawn to the target square
             console.log("Pawn takes: ");
         });
     }
@@ -206,7 +202,6 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         //
         // }
 }
-
 /*
     function movePiece(currentRow, currentCol, targetRow, targetCol) {
         const sourceSquare = chessboardArray[currentRow][currentCol];
