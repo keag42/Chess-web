@@ -158,31 +158,36 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         });
     }
 
-
     const rightAttack = chessboardArray[currentRow + 1][currentCol + 1];
     var rightAttackElement;
-    if (chessboardArray[currentRow + 1][currentCol + 1].querySelector("img")) {//opposite if there is a piece there
-        // If there's no piece in front, it's a valid move
-        rightAttackElement = document.createElement("img");  // Create an <img> element
-        rightAttackElement.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
-        rightAttackElement.alt = "move";
-        rightAttackElement.style.width = "45px";  // Set width to 50px
-        rightAttackElement.style.height = "45px"
-        rightAttack.appendChild(rightAttackElement);  // Append the image to the square
-        // Append the image to the square
+    if (chessboardArray[currentRow + 1][currentCol + 1].querySelector("img")) { // If there's a piece at the target position
+        // Check if the piece is an enemy
+        const targetSquare = chessboardArray[currentRow + 1][currentCol + 1];
+        if (targetSquare.querySelector("img")) {
+            // Add the red highlight class if it's an enemy piece
+            targetSquare.classList.add("highlight-attack");
+        }
 
+        rightAttackElement = chessboardArray[currentRow + 1][currentCol + 1];
 
         rightAttackElement.addEventListener('click', function () {
-            console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol + 1}]`);
-            // Remove the move indicator
-            rightAttack.removeChild(rightAttackElement); // this removes the indicator on the square
-            setTimeout(() => {
-                rightAttack.appendChild(pawn);
-                console.log("Pawn moved after delay..");
-            }, 5);// adds timer so that you don't click the pawn at the same time
+            console.log(`Move clicked at [${currentRow + 1}, ${currentCol + 1}]`);
 
+            // Check if the target square already has a piece (enemy or not)
+            if (rightAttack.querySelector("img")) {
+                // Remove any existing piece (if any) from the target square
+                const targetPiece = rightAttack.querySelector("img");
+                rightAttack.removeChild(targetPiece); // Remove the piece from the target square
+            }
+
+            rightAttack.appendChild(pawn); // Move the pawn to the target square
+            // Remove the move indicator
+            targetSquare.classList.remove("highlight-attack");// Remove the move indicator
+
+            console.log("Pawn takes: ");
         });
     }
+
 
 
 
