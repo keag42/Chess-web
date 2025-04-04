@@ -77,3 +77,8 @@ h1 {
 .dark {
     background-color: #769656; /* Dark green */
 }
+/* Add this to your CSS */
+.highlight-attack {
+    /*border: 2px solid red;*/
+    background-color: rgba(255, 0, 0, 0.3); /* Optional, adds a red background */
+}
