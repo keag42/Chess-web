@@ -133,14 +133,15 @@ function isEnemy(targetRow, targetCol){
 
 
 function pawnMove(currentRow, currentCol, sourceSquare, square) {
-    let isWhite = chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
+    let thisSquare = chessboardArray[currentRow][currentCol].querySelector("img");
+    let isWhite = thisSquare.src.endsWith("B.svg")  ;
+    let direction = isWhite ? 1 : -1;
     const pawn = chessboardArray[currentRow][currentCol].querySelector("img");
 
-    const forwardMove = chessboardArray[currentRow + 1][currentCol];
-    var forwardMoveElement;
-    if (!chessboardArray[currentRow + 1][currentCol].querySelector("img")) {
+    const forwardMove = chessboardArray[currentRow + direction][currentCol];
+    if (!chessboardArray[currentRow + direction][currentCol].querySelector("img")) {
         // If there's no piece in front, it's a valid move
-        forwardMoveElement = document.createElement("img");  // Create an <img> element
+        var forwardMoveElement = document.createElement("img");  // Create an <img> element
         forwardMoveElement.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
         forwardMoveElement.alt = "move";
         forwardMoveElement.style.width = "45px";  // Set width to 50px
@@ -148,7 +149,7 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         forwardMove.appendChild(forwardMoveElement);  // Append the image to the square
         // Append the image to the square
         forwardMoveElement.addEventListener('click', function() {
-            console.log(`Move circle clicked at [${currentRow + 1}, ${currentCol}]`);
+            console.log(`Move circle clicked at [${currentRow + direction}, ${currentCol}]`);
             // Remove the move indicator
             forwardMove.removeChild(forwardMoveElement); // this removes the indicator on the square
             setTimeout(() => {
@@ -158,12 +159,12 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         });
     }
 
-    const rightAttack = chessboardArray[currentRow + 1][currentCol + 1];
-    if (rightAttack.querySelector("img")) {
+    const rightAttack = chessboardArray[currentRow + direction][currentCol + 1];
+    if (rightAttack.querySelector("img") ) {
         rightAttack.classList.add("highlight-attack");
 
         rightAttack.addEventListener('click', function () {
-            console.log(`Move clicked at [${currentRow + 1}, ${currentCol + 1}]`);
+            console.log(`Move clicked at [${currentRow + direction}, ${currentCol + 1}]`);
             this.classList.remove("highlight-attack");// Remove the red highlight
             this.removeChild(rightAttack.querySelector("img"));
             this.appendChild(pawn); // Move the pawn to the target square
@@ -171,12 +172,12 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         });
     }
 
-    const leftAttack = chessboardArray[currentRow + 1][currentCol - 1];
+    const leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
     if (leftAttack.querySelector("img")) {
         leftAttack.classList.add("highlight-attack");
 
         leftAttack.addEventListener('click', function () {
-            console.log(`Move clicked at [${currentRow + 1}, ${currentCol - 1}]`);
+            console.log(`Move clicked at [${currentRow + direction}, ${currentCol - 1}]`);
             this.classList.remove("highlight-attack");// Remove the red highlight
             this.removeChild(leftAttack.querySelector("img"));
             this.appendChild(pawn); // Move the pawn to the target square
@@ -184,67 +185,4 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         });
     }
 
-
-
-
-    //VERy very temporary test isEnemy() only in this scope //todo refactor this when there's a chance
-        // function isEnemy(currentSquare, targetSquare) {
-        //     let currentPiece = currentSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
-        //     let targetPiece = targetSquare.querySelector("img").src.endsWith("B.svg")? "Black" : "White";
-        //     if(currentPiece === targetPiece) {
-        //         console.log("Same Team!");
-        //         return false;
-        //     }
-        //     else if(currentPiece !== targetPiece) {
-        //         console.log("is enemy!");
-        //         return false;
-        //     }
-        //
-        // }
 }
-/*
-    function movePiece(currentRow, currentCol, targetRow, targetCol) {
-        const sourceSquare = chessboardArray[currentRow][currentCol];
-        const targetSquare = chessboardArray[targetRow][targetCol];
-
-        // Get the image element from the source square
-        const pieceImage = sourceSquare.querySelector("img");
-        if (!pieceImage) {
-            console.log("No piece to move!");
-            return;
-        }
-
-        if(targetSquare.querySelector("img")) { //checks if it is empty
-            console.log("Target square is occupied!");
-            // -testing-
-            const imageEl = targetSquare.querySelector("img");
-            if (imageEl) {
-                const src = imageEl.src;
-                const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
-                // This regex captures the piece name and a single letter for color (W or B)
-                const match = fileName.match(/^(.*)-([WB])\.svg$/);
-                if(match) {
-                    const pieceName = match[1];
-                    const color = match[2];
-                    console.log(color === "W" ? "White" : "Black",  pieceName, `[${targetRow}, ${targetCol}]`);
-                } else {
-                    console.error("Filename does not match expected pattern:", fileName);
-                }
-            }
-
-            // ^testing^
-            return;
-        }
-
-    // Remove the piece from the source square
-    sourceSquare.removeChild(pieceImage);
-
-        // Remove the piece from the source square
-        sourceSquare.removeChild(pieceImage);
-
-        // Append the piece to the target square
-        targetSquare.appendChild(pieceImage);
-        console.log(`Moved piece from [${currentRow}, ${currentCol}] to [${targetRow}, ${targetCol}]`);
-    }
-
- */
