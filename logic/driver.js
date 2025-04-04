@@ -1,4 +1,6 @@
+let pieceSelected = false; // Flag to check if a piece is selected
 let chessboardArray = [];  // Declare it globally
+
 document.addEventListener("DOMContentLoaded", () => {
     const board = document.getElementById("chessboard");
 
@@ -10,7 +12,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
             // add piece
             generatePieces(row, col, square);
-            //add piece
 
             square.classList.add("square", (row + col) % 2 === 0 ? "light" : "dark");
             square.dataset.row = row;   // Store row in the div
@@ -29,7 +30,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 //movePiece(clickedRow, clickedCol, clickedRow+1, clickedCol, square);
                 selectedPiece(clickedRow, clickedCol, square);
-
             });
 
         }
@@ -72,13 +72,14 @@ function generatePieces(row, col, square) {
     }
 }
 //Helper Function Selected Piece, when you select a piece it will start the process of finding its moves
-function selectedPiece(currentRow, currentCol, square) {
 
+function selectedPiece(currentRow, currentCol, square) {
+    if(pieceSelected) return;
     const sourceSquare = chessboardArray[currentRow][currentCol];
     let pieceName;
     let color;
-    if(sourceSquare.querySelector("img")) { //checks if not empty
-        // -testing-
+    if(sourceSquare.querySelector("img")) {
+
         const imageEl = sourceSquare.querySelector("img");
         if (imageEl) {
             const src = imageEl.src;
@@ -93,30 +94,30 @@ function selectedPiece(currentRow, currentCol, square) {
             }
 
         } //gets piece name & color and saves them
-        // ^testing^
-    }
 
-    if(pieceName == "pawn"){
+    }//checks if not empty
+
+    if(pieceName === "pawn"){
         console.log("Pawn selected");
         pawnMove(currentRow, currentCol, sourceSquare, square);
     }
-    else if(pieceName == "rook"){
+    else if(pieceName === "rook"){
         console.log("Rook selected");
         //todo add rook method
     }
-    else if(pieceName == "horse"){
+    else if(pieceName === "horse"){
         console.log("HORSE selected");
         //todo add horse method
     }
-    else if(pieceName == "bishop"){
+    else if(pieceName === "bishop"){
         console.log("Bishop selected");
         //todo add bishop method
     }
-    else if(pieceName == "king"){
+    else if(pieceName === "king"){
         console.log("King selected");
         //todo add king method
     }
-    else if(pieceName == "queen"){
+    else if(pieceName === "queen"){
         console.log("Queen selected");
         //todo add queen method
     }
@@ -133,30 +134,35 @@ function isEnemy(targetRow, targetCol){
 
 
 function pawnMove(currentRow, currentCol, sourceSquare, square) {
+    pieceSelected = true;
     let thisSquare = chessboardArray[currentRow][currentCol].querySelector("img");
     let isWhite = thisSquare.src.endsWith("B.svg")  ;
     let direction = isWhite ? 1 : -1;
     const pawn = chessboardArray[currentRow][currentCol].querySelector("img");
 
     const forwardMove = chessboardArray[currentRow + direction][currentCol];
-    if (!chessboardArray[currentRow + direction][currentCol].querySelector("img")) {
-        // If there's no piece in front, it's a valid move
+    if (!chessboardArray[currentRow + direction][currentCol].querySelector("img")) { // If there's no piece in front, it's a valid move
+
         var forwardMoveElement = document.createElement("img");  // Create an <img> element
         forwardMoveElement.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
         forwardMoveElement.alt = "move";
         forwardMoveElement.style.width = "45px";  // Set width to 50px
         forwardMoveElement.style.height = "45px"
         forwardMove.appendChild(forwardMoveElement);  // Append the image to the square
-        // Append the image to the square
+
         forwardMoveElement.addEventListener('click', function() {
-            console.log(`Move circle clicked at [${currentRow + direction}, ${currentCol}]`);
-            // Remove the move indicator
+
+            //console.log(`Move circle clicked at [${currentRow + direction}, ${currentCol}]`);
             forwardMove.removeChild(forwardMoveElement); // this removes the indicator on the square
             setTimeout(() => {
                 forwardMove.appendChild(pawn);
                 console.log("Pawn moved after delay..");
             }, 5);// adds timer so that you dont click the pawn at the same time
+            pawnMoved();
+            forwardMoveElement.removeEventListener('click', arguments.callee); // Remove the event listener after the move
+
         });
+
     }
 
     const rightAttack = chessboardArray[currentRow + direction][currentCol + 1];
@@ -164,11 +170,11 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         rightAttack.classList.add("highlight-attack");
 
         rightAttack.addEventListener('click', function () {
-            console.log(`Move clicked at [${currentRow + direction}, ${currentCol + 1}]`);
-            this.classList.remove("highlight-attack");// Remove the red highlight
             this.removeChild(rightAttack.querySelector("img"));
             this.appendChild(pawn); // Move the pawn to the target square
-            console.log("Pawn takes: ");
+            console.log("Pawn takes: ?");
+            rightAttack.removeEventListener('click', arguments.callee); // Remove the event listener after the move
+            pawnMoved();
         });
     }
 
@@ -177,12 +183,37 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         leftAttack.classList.add("highlight-attack");
 
         leftAttack.addEventListener('click', function () {
-            console.log(`Move clicked at [${currentRow + direction}, ${currentCol - 1}]`);
-            this.classList.remove("highlight-attack");// Remove the red highlight
             this.removeChild(leftAttack.querySelector("img"));
             this.appendChild(pawn); // Move the pawn to the target square
-            console.log("Pawn takes: ");
+            console.log("Pawn takes: ?");
+            pawnMoved();
+            leftAttack.removeEventListener('click', arguments.callee); // Remove the event listener after the move
         });
+
+    }
+
+    function pawnMoved(){
+        console.log(`Pawn moved t0 [${currentRow + direction}, ${currentCol + 1}]`);
+        RemoveHighlight();
+        pieceSelected = false;
+        console.log('  ');
     }
 
 }
+function RemoveHighlight() {
+    chessboardArray.forEach((row) => {
+        row.forEach((square) => {
+            // Remove highlight class if present
+            square.classList.remove("highlight-attack");
+
+            // Remove any possibleMove indicators (optional: check the 'alt' or src)
+            const indicators = square.querySelectorAll("img");
+            indicators.forEach((img) => {
+                if (img.alt === "move") {
+                    square.removeChild(img);
+                }
+            });
+        });
+    });
+}
+
