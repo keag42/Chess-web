@@ -150,55 +150,62 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
         forwardMoveElement.style.height = "45px"
         forwardMove.appendChild(forwardMoveElement);  // Append the image to the square
 
-        forwardMoveElement.addEventListener('click', function() {
-
-            //console.log(`Move circle clicked at [${currentRow + direction}, ${currentCol}]`);
-            forwardMove.removeChild(forwardMoveElement); // this removes the indicator on the square
-            setTimeout(() => {
-                forwardMove.appendChild(pawn);
-                console.log("Pawn moved after delay..");
-            }, 5);// adds timer so that you dont click the pawn at the same time
-            pawnMoved();
-            forwardMoveElement.removeEventListener('click', arguments.callee); // Remove the event listener after the move
-
-        });
+        forwardMoveElement.addEventListener('click', forwardMoveFunc);
 
     }
 
     const rightAttack = chessboardArray[currentRow + direction][currentCol + 1];
     if (rightAttack.querySelector("img") ) {
         rightAttack.classList.add("highlight-attack");
-
-        rightAttack.addEventListener('click', function () {
-            this.removeChild(rightAttack.querySelector("img"));
-            this.appendChild(pawn); // Move the pawn to the target square
-            console.log("Pawn takes: ?");
-            rightAttack.removeEventListener('click', arguments.callee); // Remove the event listener after the move
-            pawnMoved();
-        });
+        rightAttack.addEventListener('click', rightAttackFunc);
     }
 
     const leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
     if (leftAttack.querySelector("img")) {
         leftAttack.classList.add("highlight-attack");
-
-        leftAttack.addEventListener('click', function () {
-            this.removeChild(leftAttack.querySelector("img"));
-            this.appendChild(pawn); // Move the pawn to the target square
-            console.log("Pawn takes: ?");
-            pawnMoved();
-            leftAttack.removeEventListener('click', arguments.callee); // Remove the event listener after the move
-        });
-
+        leftAttack.addEventListener('click', leftAttackFunc);
     }
 
     function pawnMoved(){
         console.log(`Pawn moved t0 [${currentRow + direction}, ${currentCol + 1}]`);
         RemoveHighlight();
-        pieceSelected = false;
+        removeEventListeners()
+        pieceSelected = false; //lets you select a piece again
         console.log('  ');
     }
+    function forwardMoveFunc (){
+        forwardMove.removeChild(forwardMoveElement); // this removes the indicator on the square
+        setTimeout(() => {
+            forwardMove.appendChild(pawn);
+            console.log("Pawn moved after delay..");
+        }, 5);// adds timer so that you dont click the pawn at the same time
+        pawnMoved();
+        forwardMoveElement.removeEventListener('click', arguments.callee); // Remove the event listener after the move
+    }
+    function rightAttackFunc (){
+        this.removeChild(rightAttack.querySelector("img"));
+        this.appendChild(pawn); // Move the pawn to the target square
+        console.log("Pawn takes: ?");
+        rightAttack.removeEventListener('click', arguments.callee); // Remove the event listener after the move
+        pawnMoved();
+    }
+    function leftAttackFunc (){
+            this.removeChild(leftAttack.querySelector("img"));
+            this.appendChild(pawn); // Move the pawn to the target square
+            console.log("Pawn takes: ?");
+            pawnMoved();
+            leftAttack.removeEventListener('click', arguments.callee); // Remove the event listener after the move
+    }
+    function removeEventListeners() {
+        // Remove listeners for forward move
+        forwardMove.removeEventListener('click', forwardMoveFunc);
 
+        // Remove listeners for right attack
+        rightAttack.removeEventListener('click', rightAttackFunc);
+
+        // Remove listeners for left attack
+        leftAttack.removeEventListener('click', leftAttackFunc);
+    }
 }
 function RemoveHighlight() {
     chessboardArray.forEach((row) => {
