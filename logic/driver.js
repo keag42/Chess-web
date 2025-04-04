@@ -124,11 +124,13 @@ function selectedPiece(currentRow, currentCol, square) {
 }
 
 //maybe>>???
-function isEnemy(targetRow, targetCol){
-    const targetSquare = chessboardArray[targetRow][targetCol];
+function isEnemy(targetSquare, isWhite){
     if(targetSquare.querySelector("img")) { //checks if it is empty
-        console.log(targetSquare.querySelector("img").src.endsWith("B.svg") ? "Black" : "White");
+        if(targetSquare.querySelector("img").src.endsWith("W.svg") === isWhite){
+            return true;
+        }
     }
+    return false;
 }
 
 
@@ -155,19 +157,19 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
     }
 
     const rightAttack = chessboardArray[currentRow + direction][currentCol + 1];
-    if (rightAttack.querySelector("img") ) {
-        rightAttack.classList.add("highlight-attack");
-        rightAttack.addEventListener('click', rightAttackFunc);
+    if (rightAttack.querySelector("img") && isEnemy(rightAttack, isWhite)) {
+            rightAttack.classList.add("highlight-attack");
+            rightAttack.addEventListener('click', rightAttackFunc);
     }
 
     const leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
-    if (leftAttack.querySelector("img")) {
+    if (leftAttack.querySelector("img") && isEnemy(leftAttack, isWhite)) {
         leftAttack.classList.add("highlight-attack");
         leftAttack.addEventListener('click', leftAttackFunc);
     }
 
     function pawnMoved(){
-        console.log(`Pawn moved t0 [${currentRow + direction}, ${currentCol + 1}]`);
+        console.log(`Pawn moved to [${currentRow + direction}, ${currentCol + 1}]`);
         RemoveHighlight();
         removeEventListeners()
         pieceSelected = false; //lets you select a piece again
