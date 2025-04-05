@@ -77,29 +77,20 @@ function selectedPiece(currentRow, currentCol, square) {
     if(pieceSelected) return;
     const sourceSquare = chessboardArray[currentRow][currentCol];
     let pieceName;
-    let color;
+    let isWhite;
     if(sourceSquare.querySelector("img")) {
-
-        const imageEl = sourceSquare.querySelector("img");
-        if (imageEl) {
-            const src = imageEl.src;
-            const fileName = src.substring(src.lastIndexOf('/') + 1); // e.g., "king-W.svg"
-            // This regex captures the piece name and a single letter for color (W or B)
-            const match = fileName.match(/^(.*)-([WB])\.svg$/);
-            if(match) {
-                pieceName = match[1]; //gets piece Name
-                color = match[2];
-            } else {
-                console.error("Filename does not match expected pattern:", fileName);
-            }
-
-        } //gets piece name & color and saves them
-
+        const imageEl = sourceSquare.querySelector("img").src;
+        const fileName = imageEl.substring(imageEl.lastIndexOf('/') + 1); // e.g., "king-W.svg"
+        // This regex captures the piece name and a single letter for color (W or B)
+        const match = fileName.match(/^(.*)-([WB])\.svg$/);
+        isWhite =  chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
+        if(match) pieceName = match[1]; //gets piece Name
+        else console.error("Filename does not match expected pattern:", fileName);
     }//checks if not empty
 
     if(pieceName === "pawn"){
         console.log("Pawn selected");
-        pawnMove(currentRow, currentCol, sourceSquare, square);
+        pawnMove(currentRow, currentCol, isWhite);
     }
     else if(pieceName === "rook"){
         console.log("Rook selected");
@@ -123,7 +114,6 @@ function selectedPiece(currentRow, currentCol, square) {
     }
 }
 
-//maybe>>???
 function isEnemy(targetSquare, isWhite){
     if(targetSquare.querySelector("img")) { //checks if it is empty
         if(targetSquare.querySelector("img").src.endsWith("W.svg") === isWhite){
@@ -133,11 +123,9 @@ function isEnemy(targetSquare, isWhite){
     return false;
 }
 
-
-
-function pawnMove(currentRow, currentCol) {
+function pawnMove(currentRow, currentCol, isWhite) {
     pieceSelected = true;
-    let isWhite =  chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
+
     let direction = isWhite ? 1 : -1;
     const pawn = chessboardArray[currentRow][currentCol].querySelector("img");
 
