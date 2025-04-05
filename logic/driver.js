@@ -135,10 +135,9 @@ function isEnemy(targetSquare, isWhite){
 
 
 
-function pawnMove(currentRow, currentCol, sourceSquare, square) {
+function pawnMove(currentRow, currentCol) {
     pieceSelected = true;
-    let thisSquare = chessboardArray[currentRow][currentCol].querySelector("img");
-    let isWhite = thisSquare.src.endsWith("B.svg")  ;
+    let isWhite =  chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
     let direction = isWhite ? 1 : -1;
     const pawn = chessboardArray[currentRow][currentCol].querySelector("img");
 
@@ -160,13 +159,13 @@ function pawnMove(currentRow, currentCol, sourceSquare, square) {
     if (rightAttack.querySelector("img") && isEnemy(rightAttack, isWhite)) {
             rightAttack.classList.add("highlight-attack");
             rightAttack.addEventListener('click', rightAttackFunc);
-    }
+    } //if space is not empty and its a enemy piece
 
     const leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
     if (leftAttack.querySelector("img") && isEnemy(leftAttack, isWhite)) {
         leftAttack.classList.add("highlight-attack");
         leftAttack.addEventListener('click', leftAttackFunc);
-    }
+    } //if space is not empty and its a enemy piece
 
     function pawnMoved(){
         console.log(`Pawn moved to [${currentRow + direction}, ${currentCol + 1}]`);
