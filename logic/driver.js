@@ -199,31 +199,30 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
     }
 }
 
-// function rookMove(currentRow, currentCol, isWhite, piece) {
-//     pieceSelected = true; // flag so that no other piece can be selected, must be set to false after piece has been moved
-//     let leftMove = chessboardArray[currentRow + 1][currentCol ];
-//     let moveIndicator = createMoveIndicator();
-//
-//     for(let i = 1; i <= 8; i++){ // LEFT
-//         if (!leftMove.querySelector("img")) { // If there's no piece in front, it's a valid move
-//             leftMove.appendChild(moveIndicator);  // Append the image to the square
-//             leftMove.addEventListener('click', leftMoveFunc);
-//         }
-//         else{ // your piece or enemy piece?
-//
-//         }
-//     }
-//
-//
-//     function leftMoveFunc (){
-//         leftMove.removeChild(moveIndicator); // this removes the indicator on the square
-//         setTimeout(() => {
-//             moveIndicator.appendChild(piece);
-//             // console.log("Pawn moved after delay..");
-//         }, 5);// adds timer so that you dont click the pawn at the same time
-//         pieceMoved();
-//     }
-// }
+function rookMove(currentRow, currentCol, isWhite, piece) {
+    pieceSelected = true; // flag so that no other piece can be selected, must be set to false after piece has been moved
+    let leftMove = chessboardArray[currentRow + 1][currentCol ];
+    let moveIndicator = createMoveIndicator();
+
+    //for(let i = 1; i <= 8; i++){ // LEFT
+        if (!leftMove.querySelector("img")) { // If there's no piece in front, it's a valid move
+            leftMove.appendChild(moveIndicator);  // Append the image to the square
+            leftMove.addEventListener('click', leftMoveFunc);
+        }
+        else{ // your piece or enemy piece?
+
+        }
+    //}
+
+
+    function leftMoveFunc (){
+        leftMove.removeChild(moveIndicator); // remove's indicator
+        setTimeout(() => {
+            leftMove.appendChild(piece);
+        }, 5); // 5ms delay
+        pieceMoved();
+    }
+}
 
 //HELPER FUNCTIONS
 function RemoveHighlight() {
