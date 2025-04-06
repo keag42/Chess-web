@@ -201,28 +201,89 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
 
 function rookMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true; // flag so that no other piece can be selected, must be set to false after piece has been moved
-    let leftMove = chessboardArray[currentRow + 1][currentCol ];
     let moveIndicator = createMoveIndicator();
 
-    //for(let i = 1; i <= 8; i++){ // LEFT
-        if (!leftMove.querySelector("img")) { // If there's no piece in front, it's a valid move
-            leftMove.appendChild(moveIndicator);  // Append the image to the square
-            leftMove.addEventListener('click', leftMoveFunc);
+
+    let backwordMove;
+    let rightMove;
+    let leftMove;
+    //forwardMove
+    let forwardMove;
+    let forwardMoveMade = false;
+    let forwardArray = [];
+    for(let i = 1; i < 8; i++){
+        if (currentRow + i >= 8)  break;//in bounds
+
+        forwardMove = chessboardArray[currentRow + i][currentCol];
+        if(forwardMove.querySelector("img")) { //if theres a piece there
+            if(isEnemy(forwardMove, isWhite)) {
+                forwardMove.classList.add("highlight-attack");
+                forwardMove.addEventListener('click', () => forwardMoveFunc(forwardMove));
+                forwardArray.push(forwardMove);
+            }
+            break; // stop checking
         }
-        else{ // your piece or enemy piece?
+        else{
+            let moveIndicator = createMoveIndicator(); // new one each time
+            forwardMove.appendChild(moveIndicator);
 
+            forwardMove.classList.add("highlight-move");
+
+            forwardMove.addEventListener('click', () => forwardMoveFunc(currentRow + i, currentCol));
+            forwardArray.push(forwardMove);
         }
-    //}
+
+    }
 
 
-    function leftMoveFunc (){
-        leftMove.removeChild(moveIndicator); // remove's indicator
+
+
+
+
+
+
+
+
+
+
+    if(currentRow - 1 >= 0) {
+        backwordMove = chessboardArray[currentRow - 1][currentCol];
+    } // backward move
+    if(currentCol + 1 < 8) {
+        rightMove = chessboardArray[currentRow][currentCol - 1];
+    } // right move
+    if(currentCol - 1 >= 0) {
+        leftMove = chessboardArray[currentRow][currentCol + 1];
+    } // left move
+
+
+   // this was working so just commented for now
+       //      if (!forwardMove.querySelector("img")) { // If there's no piece in front, it's a valid move
+       //          forwardMove.appendChild(moveIndicator);  // Append the image to the square
+       //          forwardMove.addEventListener('click', forwardMoveFunc);
+       //      }
+       //      else{
+       //      }
+
+
+
+    function forwardMoveFunc(row, col, moveIndicator) {
+        const forwardMove = chessboardArray[row][col];
+
+        // Remove the indicator
+        if (moveIndicator && forwardMove.contains(moveIndicator)) {
+            forwardMove.removeChild(moveIndicator);
+        }
+
+        // Move the piece after a short delay
         setTimeout(() => {
-            leftMove.appendChild(piece);
-        }, 5); // 5ms delay
+            forwardMove.appendChild(piece);
+        }, 5);
+
         pieceMoved();
     }
-}
+} //end of rook move
+ // ------------------------------------------------------------------------------
 
 //HELPER FUNCTIONS
 function RemoveHighlight() {
@@ -249,6 +310,7 @@ function createMoveIndicator(){
 }
 function pieceMoved(){
    // console.log(`%c${piece} moved to [${currentRow + direction}, ${currentCol + 1}]`, 'color: lightgreen;');
+    console.log('%cPiece moved', 'color: lightgreen');
     RemoveHighlight();
     pieceSelected = false; //lets you select a piece again
     console.log('  ');
