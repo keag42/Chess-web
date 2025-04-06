@@ -65,7 +65,7 @@ function generatePieces(row, col, square) {
         const piece = pieces[row][col];
         if (piece) {
             const img = document.createElement("img");
-            img.src = `../css/img/${piece}.svg`;  // Image path based on piece name
+            img.src = `img/${piece}.svg`;  // Image path based on piece name
             img.alt = piece.split("-")[1];  // Alt text as the piece color (W/B)
             square.appendChild(img);  // Append the image to the square
         }
@@ -302,7 +302,7 @@ function RemoveHighlight() {
 }
 function createMoveIndicator(){
     let moveIndicator = document.createElement("img");  // Create an <img> element
-    moveIndicator.src = `../css/img/possibleMove.svg`;  // Image path based on piece name
+    moveIndicator.src = `img/possibleMove.svg`;  // Image path based on piece name
     moveIndicator.alt = "move";
     moveIndicator.style.width = "45px";  // Set width to 50px
     moveIndicator.style.height = "45px"
