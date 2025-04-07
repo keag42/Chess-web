@@ -200,90 +200,70 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
 }
 
 function rookMove(currentRow, currentCol, isWhite, piece) {
-    pieceSelected = true; // flag so that no other piece can be selected, must be set to false after piece has been moved
-    let moveIndicator;
-    
-    let forwardHandlers = []; // store both the square and handler
+    pieceSelected = true;
+    let handlers = []; // Store all event listeners for cleanup
 
-    let backwordMove;
-    let rightMove;
-    let leftMove;
-    
-    //forwardMove
-    let forwardMove;
-    let forwardMoveMade = false;
-   // let forwardArray = [];
-    
-    for(let i = 1; i < 8; i++){
-        if (currentRow + i >= 8)  break;//if it's out of bounds stop execution
+    const moveRookHandler = (targetRow, targetCol) => {
+        const targetSquare = chessboardArray[targetRow][targetCol];
 
-        forwardMove = chessboardArray[currentRow + i][currentCol];
-        const forwardClone = forwardMove;
-        
-        if(forwardMove.querySelector("img")) { //if there's a piece there
-            if(isEnemy(forwardMove, isWhite)) {
-                forwardMove.classList.add("highlight-attack");
-                forwardMove.addEventListener('click', () => forwardMoveFunc(forwardMove));
-                forwardArray.push(forwardMove);
-            }
-            break; // stop checking
-        }
-        else{ //no piece present & not out of bounds
-            let moveIndicator = createMoveIndicator(); // only the visual part
-            forwardMove.appendChild(moveIndicator);
-
-            // forwardMove.classList.add("highlight-move");
-            let handler = () => forwardMoveFunc(currentRow + i, currentCol, moveIndicator);
-            forwardMove.addEventListener('click', handler);
-           // forwardArray.push(forwardMove);
-            forwardHandlers.push({ square: forwardMove, handler });
+        // Capture enemy piece if present
+        if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) {
+            targetSquare.removeChild(targetSquare.querySelector("img"));
         }
 
-    }
+        RemoveHighlight(); // Remove all move indicators and attack highlights
 
+        // Remove all event listeners
+        handlers.forEach(({ square, handler }) => {
+            square.removeEventListener('click', handler);
+        });
 
-    
-
-    if(currentRow - 1 >= 0) {
-        backwordMove = chessboardArray[currentRow - 1][currentCol];
-    } // backward move
-    if(currentCol + 1 < 8) {
-        rightMove = chessboardArray[currentRow][currentCol - 1];
-    } // right move
-    if(currentCol - 1 >= 0) {
-        leftMove = chessboardArray[currentRow][currentCol + 1];
-    } // left move
-
-
-   // this was working so just commented for now
-       //      if (!forwardMove.querySelector("img")) { // If there's no piece in front, it's a valid move
-       //          forwardMove.appendChild(moveIndicator);  // Append the image to the square
-       //          forwardMove.addEventListener('click', forwardMoveFunc);
-       //      }
-       //      else{
-       //      }
-
-
-
-    function forwardMoveFunc(row, col, moveIndicator) {
-        const forwardMove = chessboardArray[row][col];
-
-        // Remove the indicator
-        if (moveIndicator && forwardMove.contains(moveIndicator)) {
-            forwardMove.removeChild(moveIndicator);
-        }
-
-        // Move the piece after a short delay
+        // Move the rook to the target square
         setTimeout(() => {
-            forwardMove.appendChild(piece);
+            targetSquare.appendChild(piece);
         }, 5);
 
-        for (let { square, handler } of forwardHandlers) {
-            square.removeEventListener('click', handler);
+        pieceSelected = false; // Reset selection flag
+    };
+
+    // Check all four directions: up, down, left, right
+    const directions = [
+        { dr: -1, dc: 0 }, // Up
+        { dr: 1, dc: 0 },  // Down
+        { dr: 0, dc: -1 }, // Left
+        { dr: 0, dc: 1 }   // Right
+    ];
+
+    directions.forEach(({ dr, dc }) => {
+        for (let step = 1; step < 8; step++) {
+            const newRow = currentRow + dr * step;
+            const newCol = currentCol + dc * step;
+
+            // Boundary check
+            if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) break;
+
+            const square = chessboardArray[newRow][newCol];
+            const piecePresent = square.querySelector("img");
+
+            if (piecePresent) {
+                if (isEnemy(square, isWhite)) {
+                    square.classList.add("highlight-attack");
+                    const handler = () => moveRookHandler(newRow, newCol);
+                    square.addEventListener('click', handler);
+                    handlers.push({ square, handler });
+                }
+                break; // Stop this direction after encountering any piece
+            } else {
+                // Add move indicator for empty square
+                const moveIndicator = createMoveIndicator();
+                square.appendChild(moveIndicator);
+                const handler = () => moveRookHandler(newRow, newCol);
+                square.addEventListener('click', handler);
+                handlers.push({ square, handler });
+            }
         }
-        pieceMoved();
-    }
-} //end of rook move
+    });
+}
  // ------------------------------------------------------------------------------
 
 
