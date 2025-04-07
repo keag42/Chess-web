@@ -201,21 +201,26 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
 
 function rookMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true; // flag so that no other piece can be selected, must be set to false after piece has been moved
-    let moveIndicator = createMoveIndicator();
-
+    let moveIndicator;
+    
+    let forwardHandlers = []; // store both the square and handler
 
     let backwordMove;
     let rightMove;
     let leftMove;
+    
     //forwardMove
     let forwardMove;
     let forwardMoveMade = false;
-    let forwardArray = [];
+   // let forwardArray = [];
+    
     for(let i = 1; i < 8; i++){
-        if (currentRow + i >= 8)  break;//in bounds
+        if (currentRow + i >= 8)  break;//if it's out of bounds stop execution
 
         forwardMove = chessboardArray[currentRow + i][currentCol];
-        if(forwardMove.querySelector("img")) { //if theres a piece there
+        const forwardClone = forwardMove;
+        
+        if(forwardMove.querySelector("img")) { //if there's a piece there
             if(isEnemy(forwardMove, isWhite)) {
                 forwardMove.classList.add("highlight-attack");
                 forwardMove.addEventListener('click', () => forwardMoveFunc(forwardMove));
@@ -223,28 +228,21 @@ function rookMove(currentRow, currentCol, isWhite, piece) {
             }
             break; // stop checking
         }
-        else{
-            let moveIndicator = createMoveIndicator(); // new one each time
+        else{ //no piece present & not out of bounds
+            let moveIndicator = createMoveIndicator(); // only the visual part
             forwardMove.appendChild(moveIndicator);
 
-            forwardMove.classList.add("highlight-move");
-
-            forwardMove.addEventListener('click', () => forwardMoveFunc(currentRow + i, currentCol));
-            forwardArray.push(forwardMove);
+            // forwardMove.classList.add("highlight-move");
+            let handler = () => forwardMoveFunc(currentRow + i, currentCol, moveIndicator);
+            forwardMove.addEventListener('click', handler);
+           // forwardArray.push(forwardMove);
+            forwardHandlers.push({ square: forwardMove, handler });
         }
 
     }
 
 
-
-
-
-
-
-
-
-
-
+    
 
     if(currentRow - 1 >= 0) {
         backwordMove = chessboardArray[currentRow - 1][currentCol];
@@ -280,17 +278,23 @@ function rookMove(currentRow, currentCol, isWhite, piece) {
             forwardMove.appendChild(piece);
         }, 5);
 
+        for (let { square, handler } of forwardHandlers) {
+            square.removeEventListener('click', handler);
+        }
         pieceMoved();
     }
 } //end of rook move
  // ------------------------------------------------------------------------------
+
+
+
 
 //HELPER FUNCTIONS
 function RemoveHighlight() {
     chessboardArray.forEach((row) => {
         row.forEach((square) => {
             // Remove highlight class if present
-            square.classList.remove("highlight-attack");
+            square.classList.remove("highlight-attack"); // if i remove this the whole board doesn't load wtf
             const indicators = square.querySelectorAll("img");
             indicators.forEach((img) => {
                 if (img.alt === "move") {
