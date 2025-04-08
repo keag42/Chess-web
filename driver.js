@@ -36,12 +36,6 @@ document.addEventListener("DOMContentLoaded", () => {
         chessboardArray.push(rowArray);  // Add the row array to the main chessboard array
     }
 
-    let a1Square = chessboardArray[0][0]; // Row 0, Column 0 (a1)
-    //console.log(a1Square);  // It will log the div element for a1
-
-    // Example: Access square at row 7, col 7 (h8)
-    let h8Square = chessboardArray[7][7]; // Row 7, Column 7 (h8)
-   // console.log(h8Square);  // It will log the div element for h8
 });
 
 
@@ -73,7 +67,7 @@ function generatePieces(row, col, square) {
 }
 //Helper Function Selected Piece, when you select a piece it will start the process of finding its moves
 
-function selectedPiece(currentRow, currentCol, square) {
+function selectedPiece(currentRow, currentCol) {
     if(pieceSelected) return;
     const sourceSquare = chessboardArray[currentRow][currentCol];
     let pieceName;
@@ -100,7 +94,7 @@ function selectedPiece(currentRow, currentCol, square) {
     }
     else if(pieceName === "horse"){
         console.log("HORSE selected");
-        //todo add horse method
+        horseMove(currentRow, currentCol, isWhite, piece);
     }
     else if(pieceName === "bishop"){
         console.log("Bishop selected");
@@ -250,31 +244,21 @@ function kingMove(currentRow, currentCol, isWhite, piece){
         {dr: 1, dc: 0},   //Down
         {dr: 1, dc: 1}    //Down-Right
     ];
-    let handlerArray = [];
-    directionArray.forEach(({dr, dc}) => {
-        const newRow = currentRow + dr;
-        const newCol = currentCol + dc;
-
-        if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) return; // Boundary check
-        const targetSquare = chessboardArray[newRow][newCol];
-        const piecePresent = targetSquare.querySelector("img");
-
-        if (piecePresent) {
-            if (isEnemy(targetSquare, isWhite)) {
-                targetSquare.classList.add("highlight-attack");
-                const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
-                targetSquare.addEventListener('click', handler);
-                handlerArray.push({square: targetSquare, handler});
-            }
-        }
-        else {
-            const moveIndicator = createMoveIndicator();
-            targetSquare.appendChild(moveIndicator);
-            const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
-            targetSquare.addEventListener('click', handler);
-            handlerArray.push({square: targetSquare, handler});
-        }
-    });
+    singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
+}
+function horseMove(currentRow, currentCol, isWhite, piece){
+    pieceSelected = true;
+    const directionArray = [
+        {dr: -2, dc: -1}, // Up-Left
+        {dr: -2, dc: 1},  // Up-Right
+        {dr: -1, dc: -2}, // Left-Up
+        {dr: -1, dc: 2},  // Right-Up
+        {dr: 1, dc: -2},  // Left-Down
+        {dr: 1, dc: 2},   // Right-Down
+        {dr: 2, dc: -1},  // Down-Left
+        {dr: 2, dc: 1}    // Down-Right
+    ]
+    singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
 //HELPER FUNCTIONS
 function RemoveHighlight() {
@@ -332,6 +316,33 @@ function extendedDirectionMove(currentRow, currentCol, isWhite, piece, direction
                 targetSquare.addEventListener('click', handler);
                 handlerArray.push({square: targetSquare, handler});
             }
+        }
+    });
+}
+function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray) {
+    let handlerArray = [];
+    directionArray.forEach(({dr, dc}) => {
+        const newRow = currentRow + dr;
+        const newCol = currentCol + dc;
+
+        if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) return; // Boundary check
+        const targetSquare = chessboardArray[newRow][newCol];
+        const piecePresent = targetSquare.querySelector("img");
+
+        if (piecePresent) {
+            if (isEnemy(targetSquare, isWhite)) {
+                targetSquare.classList.add("highlight-attack");
+                const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+                targetSquare.addEventListener('click', handler);
+                handlerArray.push({square: targetSquare, handler});
+            }
+        }
+        else {
+            const moveIndicator = createMoveIndicator();
+            targetSquare.appendChild(moveIndicator);
+            const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+            targetSquare.addEventListener('click', handler);
+            handlerArray.push({square: targetSquare, handler});
         }
     });
 }
