@@ -306,6 +306,7 @@ function extendedDirectionMove(currentRow, currentCol, isWhite, piece, direction
                     const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
                     targetSquare.addEventListener('click', handler);
                     handlerArray.push({square: targetSquare, handler});
+
                 }
                 break; // stop this direction if there is a piece
             }
@@ -318,6 +319,7 @@ function extendedDirectionMove(currentRow, currentCol, isWhite, piece, direction
             }
         }
     });
+
 }
 function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray) {
     let handlerArray = [];
@@ -359,5 +361,6 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     setTimeout(() => { // Move the rook to the target square
         targetSquare.appendChild(piece);
     }, 5);
+    pieceMoved();
     pieceSelected = false; // Reset selection flag
 };
