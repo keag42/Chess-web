@@ -108,11 +108,11 @@ function selectedPiece(currentRow, currentCol, square) {
     }
     else if(pieceName === "king"){
         console.log("King selected");
-        //todo add king method
+        kingMove(currentRow, currentCol, isWhite, piece);
     }
     else if(pieceName === "queen"){
         console.log("Queen selected");
-        //todo add queen method
+        queenMove(currentRow, currentCol, isWhite, piece);
     }
 }
 
@@ -210,7 +210,6 @@ function rookMove(currentRow, currentCol, isWhite, piece) {
 
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
- // ------------------------------------------------------------------------------
 
 function bishopMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
@@ -224,7 +223,59 @@ function bishopMove(currentRow, currentCol, isWhite, piece){
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
 
+function queenMove(currentRow, currentCol, isWhite, piece){
+    pieceSelected = true;
+    const directionArray = [
+        {dr: -1, dc: -1}, //Up-Left
+        {dr: -1, dc: 0},  //Up
+        {dr: -1, dc: 1},  //Up-Right
+        {dr: 0, dc: -1},  //Left
+        {dr: 0, dc: 1},   //Right
+        {dr: 1, dc: -1},  //Down-Left
+        {dr: 1, dc: 0},   //Down
+        {dr: 1, dc: 1}    //Down-Right
+    ];
+    extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
+}
 
+function kingMove(currentRow, currentCol, isWhite, piece){
+    pieceSelected = true;
+    const directionArray = [
+        {dr: -1, dc: -1}, //Up-Left
+        {dr: -1, dc: 0},  //Up
+        {dr: -1, dc: 1},  //Up-Right
+        {dr: 0, dc: -1},  //Left
+        {dr: 0, dc: 1},   //Right
+        {dr: 1, dc: -1},  //Down-Left
+        {dr: 1, dc: 0},   //Down
+        {dr: 1, dc: 1}    //Down-Right
+    ];
+    let handlerArray = [];
+    directionArray.forEach(({dr, dc}) => {
+        const newRow = currentRow + dr;
+        const newCol = currentCol + dc;
+
+        if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) return; // Boundary check
+        const targetSquare = chessboardArray[newRow][newCol];
+        const piecePresent = targetSquare.querySelector("img");
+
+        if (piecePresent) {
+            if (isEnemy(targetSquare, isWhite)) {
+                targetSquare.classList.add("highlight-attack");
+                const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+                targetSquare.addEventListener('click', handler);
+                handlerArray.push({square: targetSquare, handler});
+            }
+        }
+        else {
+            const moveIndicator = createMoveIndicator();
+            targetSquare.appendChild(moveIndicator);
+            const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+            targetSquare.addEventListener('click', handler);
+            handlerArray.push({square: targetSquare, handler});
+        }
+    });
+}
 //HELPER FUNCTIONS
 function RemoveHighlight() {
     chessboardArray.forEach((row) => {
