@@ -140,7 +140,7 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
             rightAttack.classList.add("highlight-attack");
             rightAttack.addEventListener('click', rightAttackFunc);
             rightAttackMade = true;
-        } //if space is not empty and its a enemy piece
+        } //if space is not empty and it's an enemy piece
     }
     if(currentCol - 1 >= 0) {
         leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
@@ -148,7 +148,7 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
             leftAttack.classList.add("highlight-attack");
             leftAttack.addEventListener('click', leftAttackFunc);
             leftAttackMade = true;
-        } //if space is not empty and its a enemy piece
+        } //if space is not empty and it's an enemy piece
     }
     function pawnMoved(){
         console.log(`%cPawn moved to [${currentRow + direction}, ${currentCol + 1}]`, 'color: lightgreen;');
@@ -161,8 +161,8 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
         forwardMove.removeChild(moveIndicator); // this removes the indicator on the square
         setTimeout(() => {
             forwardMove.appendChild(piece);
-            // console.log("Pawn moved after delay..");
-        }, 5);// adds timer so that you dont click the pawn at the same time
+            // console.log("Pawn moved after delay...");
+        }, 5);// adds timer so that you don't click the pawn at the same time
          pawnMoved();
     }
     function rightAttackFunc (){
@@ -265,7 +265,7 @@ function RemoveHighlight() {
     chessboardArray.forEach((row) => {
         row.forEach((square) => {
             // Remove highlight class if present
-            square.classList.remove("highlight-attack"); // if i remove this the whole board doesn't load wtf
+            square.classList.remove("highlight-attack"); // if I remove this the whole board doesn't load wtf
             const indicators = square.querySelectorAll("img");
             indicators.forEach((img) => {
                 if (img.alt === "move") {
