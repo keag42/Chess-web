@@ -104,7 +104,7 @@ function selectedPiece(currentRow, currentCol, square) {
     }
     else if(pieceName === "bishop"){
         console.log("Bishop selected");
-        //todo add bishop method
+        bishopMove(currentRow, currentCol, isWhite, piece);
     }
     else if(pieceName === "king"){
         console.log("King selected");
@@ -203,29 +203,6 @@ function rookMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true;
     let handlers = []; // Store all event listeners for cleanup
 
-    const moveRookHandler = (targetRow, targetCol) => {
-        const targetSquare = chessboardArray[targetRow][targetCol];
-
-        // Capture enemy piece if present
-        if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) {
-            targetSquare.removeChild(targetSquare.querySelector("img"));
-        }
-
-        RemoveHighlight(); // Remove all move indicators and attack highlights
-
-        // Remove all event listeners
-        handlers.forEach(({ square, handler }) => {
-            square.removeEventListener('click', handler);
-        });
-
-        // Move the rook to the target square
-        setTimeout(() => {
-            targetSquare.appendChild(piece);
-        }, 5);
-
-        pieceSelected = false; // Reset selection flag
-    };
-
     // Check all four directions: up, down, left, right
     const directions = [
         { dr: -1, dc: 0 }, // Up
@@ -248,25 +225,75 @@ function rookMove(currentRow, currentCol, isWhite, piece) {
             if (piecePresent) {
                 if (isEnemy(square, isWhite)) {
                     square.classList.add("highlight-attack");
-                    const handler = () => moveRookHandler(newRow, newCol);
+                    const handler = () => moveHandler(newRow, newCol, isWhite, handlers, piece);
                     square.addEventListener('click', handler);
                     handlers.push({ square, handler });
                 }
                 break; // Stop this direction after encountering any piece
             } else {
-                // Add move indicator for empty square
                 const moveIndicator = createMoveIndicator();
                 square.appendChild(moveIndicator);
-                const handler = () => moveRookHandler(newRow, newCol);
+                const handler = () => moveHandler(newRow, newCol, isWhite, handlers, piece);
                 square.addEventListener('click', handler);
                 handlers.push({ square, handler });
             }
         }
+        // const moveRookHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
+        //     const targetSquare = chessboardArray[targetRow][targetCol];
+        //     RemoveHighlight(); // Remove all move indicators and attack highlights
+        //
+        //     if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) { // Capture enemy piece if present
+        //         targetSquare.removeChild(targetSquare.querySelector("img"));
+        //     }
+        //     handlerArray.forEach(({ square, handler }) => { // Remove all event listeners
+        //         square.removeEventListener('click', handler);
+        //     });
+        //     setTimeout(() => { // Move the rook to the target square
+        //         targetSquare.appendChild(piece);
+        //     }, 5);
+        //     pieceSelected = false; // Reset selection flag
+        // };
     });
 }
  // ------------------------------------------------------------------------------
 
+function bishopMove(currentRow, currentCol, isWhite, piece){
+    pieceSelected = true;
+    let handlerArray = [];
+    const directionArray = [
+        {dr: -1, dc: -1}, //Up-Left
+        {dr: -1, dc: 1},  //Up-Right
+        {dr: 1, dc: -1},  //Down-Left
+        {dr: 1, dc: 1}    //Down-Right
+    ];
 
+    directionArray.forEach(({dr, dc}) => {
+        for(let step =1; step < 8; step++){
+            const newRow = currentRow + dr * step;
+            const newCol = currentCol + dc * step;
+            if(newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) break; // Boundary check
+            const targetSquare = chessboardArray[newRow][newCol];
+            const piecePresent = targetSquare.querySelector("img");
+
+            if(piecePresent) {
+                if(isEnemy(targetSquare, isWhite)) {
+                    targetSquare.classList.add("highlight-attack");
+                    const handler = () => moveHandler(newRow, newCol, isWhite, handlers, piece);
+                    targetSquare.addEventListener('click', handler);
+                    handlerArray.push({square: targetSquare, handler});
+                }
+                break; // stop this direction if there is a piece
+            }
+            else{
+                const moveIndicator = createMoveIndicator();
+                targetSquare.appendChild(moveIndicator);
+                const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+                targetSquare.addEventListener('click', handler);
+                handlerArray.push({square: targetSquare, handler});
+            }
+        }
+    });//end of forEach
+}
 
 
 //HELPER FUNCTIONS
@@ -299,3 +326,18 @@ function pieceMoved(){
     pieceSelected = false; //lets you select a piece again
     console.log('  ');
 }
+moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
+    const targetSquare = chessboardArray[targetRow][targetCol];
+    RemoveHighlight(); // Remove all move indicators and attack highlights
+
+    if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) { // Capture enemy piece if present
+        targetSquare.removeChild(targetSquare.querySelector("img"));
+    }
+    handlerArray.forEach(({ square, handler }) => { // Remove all event listeners
+        square.removeEventListener('click', handler);
+    });
+    setTimeout(() => { // Move the rook to the target square
+        targetSquare.appendChild(piece);
+    }, 5);
+    pieceSelected = false; // Reset selection flag
+};
