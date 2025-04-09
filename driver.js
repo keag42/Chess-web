@@ -73,6 +73,7 @@ function selectedPiece(currentRow, currentCol) {
     let pieceName;
     let isWhite;
     let piece;
+
     if(sourceSquare.querySelector("img")) {
         const imageEl = sourceSquare.querySelector("img").src;
         const fileName = imageEl.substring(imageEl.lastIndexOf('/') + 1); // e.g., "king-W.svg"
@@ -84,30 +85,9 @@ function selectedPiece(currentRow, currentCol) {
         else console.error("Filename does not match expected pattern:", fileName);
     }//checks if not empty
 
-    if(pieceName === "pawn"){
-        console.log("Pawn selected");
-        pawnMove(currentRow, currentCol, isWhite, piece);
-    }
-    else if(pieceName === "rook"){
-        console.log("Rook selected");
-        rookMove(currentRow, currentCol, isWhite, piece);
-    }
-    else if(pieceName === "horse"){
-        console.log("HORSE selected");
-        horseMove(currentRow, currentCol, isWhite, piece);
-    }
-    else if(pieceName === "bishop"){
-        console.log("Bishop selected");
-        bishopMove(currentRow, currentCol, isWhite, piece);
-    }
-    else if(pieceName === "king"){
-        console.log("King selected");
-        kingMove(currentRow, currentCol, isWhite, piece);
-    }
-    else if(pieceName === "queen"){
-        console.log("Queen selected");
-        queenMove(currentRow, currentCol, isWhite, piece);
-    }
+     window[`${pieceName}Move`](currentRow, currentCol, isWhite, piece);
+     console.log(`%c${pieceName} selected`, 'color: lightblue;');
+
 }
 
 function isEnemy(targetSquare, isWhite){
@@ -352,7 +332,7 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     ifEnemyTakePiece(targetSquare, isWhite);
     removeEventAllListeners(handlerArray);
     movePieceToSquare(targetSquare, piece);
-    pieceMoved();
+    pieceMoved(piece, targetRow, targetCol);
     pieceSelected = false; // Reset selection flag
 };
 
@@ -380,9 +360,9 @@ function createMoveIndicator(){
     moveIndicator.style.height = "45px"
     return moveIndicator;
 }
-function pieceMoved(){
-   // console.log(`%c${piece} moved to [${currentRow + direction}, ${currentCol + 1}]`, 'color: lightgreen;');
-    console.log('%cPiece moved', 'color: lightgreen');
+function pieceMoved(piece, newRow, newCol) {
+    let [, pieceName] = piece.src.substring(piece.src.lastIndexOf('/') + 1).match(/^(.*)-[WB]\.svg$/) || [];
+    console.log(`%c${pieceName} moved to [${newRow}, ${newCol}]`, 'color: lightgreen;');
     RemoveHighlight();
     pieceSelected = false; //lets you select a piece again
     console.log('  ');
