@@ -257,10 +257,10 @@ function horseMove(currentRow, currentCol, isWhite, piece){
 
 
 // MOVEMENT HELPERS
+let handlerArray = [];
 function extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray){
     let moveChoicesCount = 0;
     directionArray.forEach(({dr, dc}) => {
-        let handlerArray = [];
         for (let step = 1; step < 8; step++) {
             const newRow = currentRow + dr * step;
             const newCol = currentCol + dc * step;
@@ -294,7 +294,6 @@ function extendedDirectionMove(currentRow, currentCol, isWhite, piece, direction
 
 }
 function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray) {
-    let handlerArray = [];
     let moveChoicesCount = 0;
 
     directionArray.forEach(({dr, dc}) => {
@@ -326,6 +325,7 @@ function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionAr
         console.log("%cThis piece has no where to go..", 'color: red;');
     }
 }
+
 moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     const targetSquare = chessboardArray[targetRow][targetCol];
     RemoveHighlight(); // Remove all move indicators and attack highlights
