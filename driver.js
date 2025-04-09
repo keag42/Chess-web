@@ -126,30 +126,48 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
     let moveIndicator= createMoveIndicator();
     let rightAttack;
     let leftAttack;
+    let forwardMove;
     let leftAttackMade = false;
     let rightAttackMade = false;
-    const forwardMove = chessboardArray[currentRow + direction][currentCol];
+    let moveCounter = 0;
 
-    if (!forwardMove.querySelector("img")) { // If there's no piece in front, it's a valid move
-        forwardMove.appendChild(moveIndicator);  // Append the image to the square
-        moveIndicator.addEventListener('click', forwardMoveFunc);
+
+    if(currentRow + direction >= 0 && currentRow + direction < 8) {
+        forwardMove = chessboardArray[currentRow + direction][currentCol];
+        if (!forwardMove.querySelector("img") && currentRow + direction <= 8 && currentRow + direction >= 0 ) {
+            forwardMove.appendChild(moveIndicator);  // Append the image to the square
+            let forwardMoveFuncHandler = () => forwardMoveFunc();
+            moveIndicator.addEventListener('click', forwardMoveFuncHandler);
+            moveCounter++;
+        }
     }
-    if(currentCol + 1 < 8) {
-        rightAttack = chessboardArray[currentRow + direction][currentCol + 1];
-        if (rightAttack.querySelector("img") && isEnemy(rightAttack, isWhite)) {
-            rightAttack.classList.add("highlight-attack");
-            rightAttack.addEventListener('click', rightAttackFunc);
-            rightAttackMade = true;
-        } //if space is not empty and it's an enemy piece
+
+//if there's no piece in front & its not off the board
+    if(currentRow + direction >= 0 && currentRow + direction < 8) { // if the forward move is on the board
+        if (currentCol + 1 < 8) {
+            rightAttack = chessboardArray[currentRow + direction][currentCol + 1];
+            if (rightAttack.querySelector("img") && isEnemy(rightAttack, isWhite)) {
+                rightAttack.classList.add("highlight-attack");
+                rightAttack.addEventListener('click', rightAttackFunc);
+                moveCounter++;
+                rightAttackMade = true;
+            } //if space is not empty and it's an enemy piece
+        }
+        if (currentCol - 1 >= 0) {
+            leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
+            if (leftAttack.querySelector("img") && isEnemy(leftAttack, isWhite)) {
+                leftAttack.classList.add("highlight-attack");
+                leftAttack.addEventListener('click', leftAttackFunc);
+                moveCounter++;
+                leftAttackMade = true;
+            } //if space is not empty and it's an enemy piece
+        }
     }
-    if(currentCol - 1 >= 0) {
-        leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
-        if (leftAttack.querySelector("img") && isEnemy(leftAttack, isWhite)) {
-            leftAttack.classList.add("highlight-attack");
-            leftAttack.addEventListener('click', leftAttackFunc);
-            leftAttackMade = true;
-        } //if space is not empty and it's an enemy piece
+    if(moveCounter === 0){
+        pieceSelected = false;
+        console.log("%cThis piece has no where to go..", 'color: red;');
     }
+
     function pawnMoved(){
         console.log(`%cPawn moved to [${currentRow + direction}, ${currentCol + 1}]`, 'color: lightgreen;');
         RemoveHighlight();
@@ -192,7 +210,6 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
         }
     }
 }
-
 function rookMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true;
     const directionArray = [
@@ -204,7 +221,6 @@ function rookMove(currentRow, currentCol, isWhite, piece) {
 
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
-
 function bishopMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
 
@@ -216,7 +232,6 @@ function bishopMove(currentRow, currentCol, isWhite, piece){
     ];
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
-
 function queenMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
     const directionArray = [
@@ -231,7 +246,6 @@ function queenMove(currentRow, currentCol, isWhite, piece){
     ];
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
-
 function kingMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
     const directionArray = [
