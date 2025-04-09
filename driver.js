@@ -260,6 +260,89 @@ function horseMove(currentRow, currentCol, isWhite, piece){
     ]
     singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
+
+
+// MOVEMENT HELPERS
+function extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray){
+    let moveChoicesCount = 0;
+    directionArray.forEach(({dr, dc}) => {
+        let handlerArray = [];
+        for (let step = 1; step < 8; step++) {
+            const newRow = currentRow + dr * step;
+            const newCol = currentCol + dc * step;
+            if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) break; // Boundary check
+            const targetSquare = chessboardArray[newRow][newCol];
+            const piecePresent = targetSquare.querySelector("img");
+            const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+
+            if (piecePresent) {
+                if (isEnemy(targetSquare, isWhite)) {
+                    targetSquare.classList.add("highlight-attack");
+                    targetSquare.addEventListener('click', handler);
+                    handlerArray.push({square: targetSquare, handler});
+                    moveChoicesCount++;
+                }
+                break; // stop this direction if there is a piece
+            }
+            else {
+                const moveIndicator = createMoveIndicator();
+                targetSquare.appendChild(moveIndicator);
+                targetSquare.addEventListener('click', handler);
+                handlerArray.push({square: targetSquare, handler});
+                moveChoicesCount++;
+            }
+        }
+    });
+    if(moveChoicesCount === 0){
+        pieceSelected = false;
+        console.log("%cThis piece has no where to go..", 'color: red;');
+    }
+
+}
+function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray) {
+    let handlerArray = [];
+    let moveChoicesCount = 0;
+
+    directionArray.forEach(({dr, dc}) => {
+        const newRow = currentRow + dr;
+        const newCol = currentCol + dc;
+
+        if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) return; // Boundary check
+        const targetSquare = chessboardArray[newRow][newCol];
+        const piecePresent = targetSquare.querySelector("img");
+        const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+        if (piecePresent) {
+            if (isEnemy(targetSquare, isWhite)) {
+                targetSquare.classList.add("highlight-attack");
+                targetSquare.addEventListener('click', handler);
+                handlerArray.push({square: targetSquare, handler});
+                moveChoicesCount++;
+            }
+        }
+        else {
+            const moveIndicator = createMoveIndicator();
+            targetSquare.appendChild(moveIndicator);
+            targetSquare.addEventListener('click', handler);
+            handlerArray.push({square: targetSquare, handler});
+            moveChoicesCount++;
+        }
+    });
+    if(moveChoicesCount === 0){
+        pieceSelected = false;
+        console.log("%cThis piece has no where to go..", 'color: red;');
+    }
+}
+moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
+    const targetSquare = chessboardArray[targetRow][targetCol];
+    RemoveHighlight(); // Remove all move indicators and attack highlights
+    ifEnemyTakePiece(targetSquare, isWhite);
+    removeEventAllListeners(handlerArray);
+    movePieceToSquare(targetSquare, piece);
+    pieceMoved();
+    pieceSelected = false; // Reset selection flag
+};
+
+
 //HELPER FUNCTIONS
 function RemoveHighlight() {
     chessboardArray.forEach((row) => {
@@ -290,77 +373,19 @@ function pieceMoved(){
     pieceSelected = false; //lets you select a piece again
     console.log('  ');
 }
-function extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray){
-    directionArray.forEach(({dr, dc}) => {
-        let handlerArray = [];
-        for (let step = 1; step < 8; step++) {
-            const newRow = currentRow + dr * step;
-            const newCol = currentCol + dc * step;
-            if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) break; // Boundary check
-            const targetSquare = chessboardArray[newRow][newCol];
-            const piecePresent = targetSquare.querySelector("img");
 
-            if (piecePresent) {
-                if (isEnemy(targetSquare, isWhite)) {
-                    targetSquare.classList.add("highlight-attack");
-                    const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
-                    targetSquare.addEventListener('click', handler);
-                    handlerArray.push({square: targetSquare, handler});
-
-                }
-                break; // stop this direction if there is a piece
-            }
-            else {
-                const moveIndicator = createMoveIndicator();
-                targetSquare.appendChild(moveIndicator);
-                const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
-                targetSquare.addEventListener('click', handler);
-                handlerArray.push({square: targetSquare, handler});
-            }
-        }
-    });
-
-}
-function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray) {
-    let handlerArray = [];
-    directionArray.forEach(({dr, dc}) => {
-        const newRow = currentRow + dr;
-        const newCol = currentCol + dc;
-
-        if (newRow < 0 || newRow >= 8 || newCol < 0 || newCol >= 8) return; // Boundary check
-        const targetSquare = chessboardArray[newRow][newCol];
-        const piecePresent = targetSquare.querySelector("img");
-
-        if (piecePresent) {
-            if (isEnemy(targetSquare, isWhite)) {
-                targetSquare.classList.add("highlight-attack");
-                const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
-                targetSquare.addEventListener('click', handler);
-                handlerArray.push({square: targetSquare, handler});
-            }
-        }
-        else {
-            const moveIndicator = createMoveIndicator();
-            targetSquare.appendChild(moveIndicator);
-            const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
-            targetSquare.addEventListener('click', handler);
-            handlerArray.push({square: targetSquare, handler});
-        }
-    });
-}
-moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
-    const targetSquare = chessboardArray[targetRow][targetCol];
-    RemoveHighlight(); // Remove all move indicators and attack highlights
-
-    if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) { // Capture enemy piece if present
-        targetSquare.removeChild(targetSquare.querySelector("img"));
-    }
+function removeEventAllListeners(handlerArray) {
     handlerArray.forEach(({ square, handler }) => { // Remove all event listeners
         square.removeEventListener('click', handler);
     });
+} // only to be called in move handling functions
+function movePieceToSquare(targetSquare, piece) {
     setTimeout(() => { // Move the rook to the target square
         targetSquare.appendChild(piece);
     }, 5);
-    pieceMoved();
-    pieceSelected = false; // Reset selection flag
-};
+} // only to be called in move handling functions
+function ifEnemyTakePiece(targetSquare, isWhite){
+    if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) { // Capture enemy piece if present
+        targetSquare.removeChild(targetSquare.querySelector("img"));
+    }
+} // only to be called in move handling functions
