@@ -69,23 +69,21 @@ function generatePieces(row, col, square) {
 
 function selectedPiece(currentRow, currentCol) {
     if(pieceSelected) return;
-    const sourceSquare = chessboardArray[currentRow][currentCol];
+    const curTile = chessboardArray[currentRow][currentCol].querySelector("img"); //current tile
     let pieceName;
     let isWhite;
-    let piece;
 
-    if(sourceSquare.querySelector("img")) {
-        const imageEl = sourceSquare.querySelector("img").src;
-        const fileName = imageEl.substring(imageEl.lastIndexOf('/') + 1); // e.g., "king-W.svg"
+    if(curTile) {
+        let url = curTile.src;
+        const fileName = url.substring(url.lastIndexOf('/') + 1); // e.g., "king-W.svg"
         // This regex captures the piece name and a single letter for color (W or B)
         const match = fileName.match(/^(.*)-([WB])\.svg$/);
-        isWhite =  chessboardArray[currentRow][currentCol].querySelector("img").src.endsWith("B.svg");
-        piece = chessboardArray[currentRow][currentCol].querySelector("img");
-        if(match) pieceName = match[1]; //gets piece Name
+        isWhite =  url.endsWith("B.svg");
+        if(match) pieceName = match[1];
         else console.error("Filename does not match expected pattern:", fileName);
     }//checks if not empty
 
-     window[`${pieceName}Move`](currentRow, currentCol, isWhite, piece);
+     window[`${pieceName}Move`](currentRow, currentCol, isWhite, curTile);
      console.log(`%c${pieceName} selected`, 'color: lightblue;');
 
 }
