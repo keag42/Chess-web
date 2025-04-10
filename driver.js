@@ -20,15 +20,9 @@ document.addEventListener("DOMContentLoaded", () => {
             rowArray.push(square);  // Add the square to the current row array
 
             square.addEventListener('click', function() {
-
                 const clickedRow = parseInt(this.dataset.row);
                 const clickedCol = parseInt(this.dataset.col);
-                const chessNotation = String.fromCharCode(97 + clickedCol) + (clickedRow + 1);
-
-                // console.log(` you chose: \nArray indices: [${clickedRow}, ${clickedCol}] \nChess notation: ${chessNotation}`);
-                //console.log(`Current place: [${clickedRow}, ${clickedCol}]`)
-
-                //movePiece(clickedRow, clickedCol, clickedRow+1, clickedCol, square);
+                //const chessNotation = String.fromCharCode(97 + clickedCol) + (clickedRow + 1);
                 selectedPiece(clickedRow, clickedCol, square);
             });
 
@@ -250,12 +244,12 @@ function horseMove(currentRow, currentCol, isWhite, piece){
     ]
     singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
-window.pawnMove = pawnMove;
-window.rookMove = rookMove;
-window.bishopMove = bishopMove;
-window.horseMove = horseMove;
-window.queenMove = queenMove;
-window.kingMove = kingMove;
+// window.pawnMove = pawnMove;
+// window.rookMove = rookMove;
+// window.bishopMove = bishopMove;
+// window.horseMove = horseMove;
+// window.queenMove = queenMove;
+// window.kingMove = kingMove;
 
 
 // MOVEMENT HELPERS
@@ -330,11 +324,13 @@ function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionAr
 
 moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     const targetSquare = chessboardArray[targetRow][targetCol];
+    let attackedPieceName = ifEnemyTakePiece(targetSquare, isWhite);
+    let isAttack = attackedPieceName != null;
+
     RemoveHighlight(); // Remove all move indicators and attack highlights
-    ifEnemyTakePiece(targetSquare, isWhite);
     removeEventAllListeners(handlerArray);
     movePieceToSquare(targetSquare, piece);
-    pieceMoved(piece, targetRow, targetCol);
+    pieceMoved(piece, targetRow, targetCol, isAttack, attackedPieceName);
     pieceSelected = false; // Reset selection flag
 };
 
@@ -362,9 +358,14 @@ function createMoveIndicator(){
     moveIndicator.style.height = "45px"
     return moveIndicator;
 }
-function pieceMoved(piece, newRow, newCol) {
+function pieceMoved(piece, newRow, newCol, isAttack, attackedPieceName) {
     let [, pieceName] = piece.src.substring(piece.src.lastIndexOf('/') + 1).match(/^(.*)-[WB]\.svg$/) || [];
-    console.log(`%c${pieceName} moved to [${newRow}, ${newCol}]`, 'color: lightgreen;');
+    if(isAttack){
+        console.log(`%c${pieceName} %ctakes ->  %c${attackedPieceName}`, `color: lightgreen`, '', 'color: salmon;');
+    }
+    else {
+        console.log(`%c${pieceName} moved to [${newRow}, ${newCol}]`, 'color: lightgreen;');
+    }
     RemoveHighlight();
     pieceSelected = false; //lets you select a piece again
     console.log('  ');
@@ -382,6 +383,19 @@ function movePieceToSquare(targetSquare, piece) {
 } // only to be called in move handling functions
 function ifEnemyTakePiece(targetSquare, isWhite){
     if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) { // Capture enemy piece if present
+        let pieceName = getPieceName(targetSquare);
         targetSquare.removeChild(targetSquare.querySelector("img"));
+        return pieceName;
     }
 } // only to be called in move handling functions
+function getPieceName(targetSquare){
+    let curTile = targetSquare.querySelector("img");
+    if(curTile) {
+        let url = curTile.src;
+        const fileName = url.substring(url.lastIndexOf('/') + 1); // e.g., "king-W.svg"
+        // This regex captures the piece name and a single letter for color (W or B)
+        const match = fileName.match(/^(.*)-([WB])\.svg$/);
+        if(match) return match[1];
+        else console.error("Filename does not match expected pattern:", fileName);
+    }//checks if not empty
+}
