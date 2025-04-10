@@ -81,11 +81,9 @@ function selectedPiece(currentRow, currentCol) {
         isWhite =  url.endsWith("B.svg");
         if(match) pieceName = match[1];
         else console.error("Filename does not match expected pattern:", fileName);
+        window[`${pieceName}Move`](currentRow, currentCol, isWhite, curTile);
+        console.log(`%c${pieceName} selected`, 'color: lightblue;');
     }//checks if not empty
-
-     window[`${pieceName}Move`](currentRow, currentCol, isWhite, curTile);
-     console.log(`%c${pieceName} selected`, 'color: lightblue;');
-
 }
 
 function isEnemy(targetSquare, isWhite){
@@ -252,6 +250,12 @@ function horseMove(currentRow, currentCol, isWhite, piece){
     ]
     singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
+window.pawnMove = pawnMove;
+window.rookMove = rookMove;
+window.bishopMove = bishopMove;
+window.horseMove = horseMove;
+window.queenMove = queenMove;
+window.kingMove = kingMove;
 
 
 // MOVEMENT HELPERS
