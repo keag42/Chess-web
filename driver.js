@@ -58,6 +58,9 @@ function generatePieces(row, col, square) {
             square.appendChild(img);  // Append the image to the square
         }
     }
+
+    //TODO FOR TESTING ONLY.
+     removeAllPawns();
 }
 //Helper Function Selected Piece, when you select a piece it will start the process of finding its moves
 
@@ -398,4 +401,18 @@ function getPieceName(targetSquare){
         if(match) return match[1];
         else console.error("Filename does not match expected pattern:", fileName);
     }//checks if not empty
+}
+
+
+// devolpement helper functions
+function removeAllPawns() {
+    chessboardArray.forEach(row => {
+        row.forEach(square => {
+            const img = square.querySelector("img");
+            if (img && img.src.includes("pawn")) {
+                square.removeChild(img);
+            }
+        });
+    });
+    console.log("%cAll pawns removed for development", "color: orange;");
 }
