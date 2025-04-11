@@ -1,9 +1,8 @@
 let pieceSelected = false; // Flag to check if a piece is selected
 let chessboardArray = [];  // Declare it globally
-
+let moveTurnWhite = true;
 document.addEventListener("DOMContentLoaded", () => {
     const board = document.getElementById("chessboard");
-
     // Create the chessboard grid and store references in the 2D array
     for (let row = 0; row < 8; row++) {
         let rowArray = []; // Temporary array for the current row
@@ -76,10 +75,15 @@ function selectedPiece(currentRow, currentCol) {
         // This regex captures the piece name and a single letter for color (W or B)
         const match = fileName.match(/^(.*)-([WB])\.svg$/);
         isWhite =  url.endsWith("B.svg");
-        if(match) pieceName = match[1];
-        else console.error("Filename does not match expected pattern:", fileName);
-        window[`${pieceName}Move`](currentRow, currentCol, isWhite, curTile);
-        console.log(`%c${pieceName} selected`, 'color: lightblue;');
+
+        if(isWhite === !moveTurnWhite) {
+            if (match) pieceName = match[1];
+            else console.error("Filename does not match expected pattern:", fileName);
+            window[`${pieceName}Move`](currentRow, currentCol, isWhite, curTile);
+            console.log(`%c${pieceName} selected`, 'color: lightblue;');
+        }
+        else showMessage(`It's ${moveTurnWhite ? "white" : "black"}'s turn`);
+
     }//checks if not empty
 }
 
@@ -335,10 +339,20 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     movePieceToSquare(targetSquare, piece);
     pieceMoved(piece, targetRow, targetCol, isAttack, attackedPieceName);
     pieceSelected = false; // Reset selection flag
+
+    moveTurnWhite = !moveTurnWhite; //switch turns
 };
 
 
 //HELPER FUNCTIONS
+function showMessage(message) {
+    const msgDiv = document.createElement("div");
+    msgDiv.textContent = message;
+    msgDiv.className = "message-popup";
+    document.body.appendChild(msgDiv);
+    setTimeout(() => msgDiv.remove(), 2000);
+}
+
 function RemoveHighlight() {
     chessboardArray.forEach((row) => {
         row.forEach((square) => {
@@ -404,7 +418,7 @@ function getPieceName(targetSquare){
 }
 
 
-// devolpement helper functions
+// development helper functions
 function removeAllPawns() {
     chessboardArray.forEach(row => {
         row.forEach(square => {
