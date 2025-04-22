@@ -187,6 +187,20 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
         }
     }
 }
+/**
+ * Handles the movement of a rook on the chessboard.
+ * Rooks can move in straight lines along rows and columns.
+ *
+ * This function sets up the directional movement (up, down, left, right)
+ * and delegates to `extendedDirectionMove` for processing valid move options.
+ *
+ * @param {number} currentRow - The current row of the selected piece (0–7).
+ * @param {number} currentCol - The current column of the selected piece (0–7).
+ * @param {boolean} isWhite - Indicates if the selected piece is white.
+ * @param {HTMLElement} piece - The DOM element representing the selected piece.
+ *
+ * @returns {void}
+ */
 function rookMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true;
     const directionArray = [
@@ -198,6 +212,20 @@ function rookMove(currentRow, currentCol, isWhite, piece) {
 
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
+/**
+ * Handles the movement of a bishop on the chessboard.
+ * Bishops move diagonally across the board.
+ *
+ * This function sets up the directional movement (up-left, up-right, down-left, down-right)
+ * and delegates to `extendedDirectionMove` for processing valid move options.
+ *
+ * @param {number} currentRow - The current row of the selected piece (0–7).
+ * @param {number} currentCol - The current column of the selected piece (0–7).
+ * @param {boolean} isWhite - Indicates if the selected piece is white.
+ * @param {HTMLElement} piece - The DOM element representing the selected piece.
+ *
+ * @returns {void}
+ */
 function bishopMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
 
@@ -209,6 +237,20 @@ function bishopMove(currentRow, currentCol, isWhite, piece){
     ];
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
+/**
+ * Handles the movement of a queen on the chessboard.
+ * Queens can move horizontally, vertically, or diagonally.
+ *
+ * This function sets up the directional movement (all 8 directions)
+ * and delegates to `extendedDirectionMove` for processing valid move options.
+ *
+ * @param {number} currentRow - The current row of the selected piece (0–7).
+ * @param {number} currentCol - The current column of the selected piece (0–7).
+ * @param {boolean} isWhite - Indicates if the selected piece is white.
+ * @param {HTMLElement} piece - The DOM element representing the selected piece.
+ *
+ * @returns {void}
+ */
 function queenMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
     const directionArray = [
@@ -223,6 +265,20 @@ function queenMove(currentRow, currentCol, isWhite, piece){
     ];
     extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
+/**
+ * Handles the movement of a king on the chessboard.
+ * Kings can move one square in any direction.
+ *
+ * This function sets up the directional movement (all 8 directions)
+ * and delegates to `singleDirectionMove` for processing valid move options.
+ *
+ * @param {number} currentRow - The current row of the selected piece (0–7).
+ * @param {number} currentCol - The current column of the selected piece (0–7).
+ * @param {boolean} isWhite - Indicates if the selected piece is white.
+ * @param {HTMLElement} piece - The DOM element representing the selected piece.
+ *
+ * @returns {void}
+ */
 function kingMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
     const directionArray = [
@@ -237,6 +293,20 @@ function kingMove(currentRow, currentCol, isWhite, piece){
     ];
     singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray);
 }
+/**
+ * Handles the movement of a knight (horse) on the chessboard.
+ * Knights move in an "L" shape: two squares in one direction and one square perpendicular.
+ *
+ * This function sets up the directional movement (all 8 possible L-shaped moves)
+ * and delegates to `singleDirectionMove` for processing valid move options.
+ *
+ * @param {number} currentRow - The current row of the selected piece (0–7).
+ * @param {number} currentCol - The current column of the selected piece (0–7).
+ * @param {boolean} isWhite - Indicates if the selected piece is white.
+ * @param {HTMLElement} piece - The DOM element representing the selected piece.
+ *
+ * @returns {void}
+ */
 function horseMove(currentRow, currentCol, isWhite, piece){
     pieceSelected = true;
     const directionArray = [
@@ -261,6 +331,25 @@ function horseMove(currentRow, currentCol, isWhite, piece){
 
 // MOVEMENT HELPERS
 let handlerArray = [];
+/**
+ * Handles movement logic for pieces that can move multiple steps in a direction,
+ * such as rooks, bishops, and queens.
+ *
+ * Iterates through each direction in `directionArray`, extending step by step
+ * until it hits the board boundary, a friendly piece, or an enemy piece.
+ * Highlights valid move and attack squares, attaches movement event handlers,
+ * and tracks the number of legal move options.
+ *
+ * Stops extending in a direction once a piece is encountered (to simulate blocking).
+ *
+ * @param {number} currentRow - The current row of the selected piece (0–7).
+ * @param {number} currentCol - The current column of the selected piece (0–7).
+ * @param {boolean} isWhite - Indicates if the selected piece is white.
+ * @param {HTMLElement} piece - The DOM element representing the selected piece.
+ * @param {{dr: number, dc: number}[]} directionArray - Array of direction vectors (`dr`, `dc`) representing movement directions.
+ *
+ * @returns {void}
+ */
 function extendedDirectionMove(currentRow, currentCol, isWhite, piece, directionArray){
     let moveChoicesCount = 0;
     directionArray.forEach(({dr, dc}) => {
@@ -296,6 +385,24 @@ function extendedDirectionMove(currentRow, currentCol, isWhite, piece, direction
     }
 
 }
+/**
+ * Handles movement logic for pieces that move in a single-step directional pattern.
+ *
+ * Iterates through each direction in `directionArray`, checks if the move is within bounds,
+ * and determines whether the target square is empty or contains an enemy piece.
+ * Highlights valid moves or attacks, attaches event handlers for movement,
+ * and counts how many valid move options exist.
+ *
+ * If no valid moves are found, it disables the selection of the piece.
+ *
+ * @param {number} currentRow - The current row of the selected piece (0–7).
+ * @param {number} currentCol - The current column of the selected piece (0–7).
+ * @param {boolean} isWhite - Indicates if the selected piece is white.
+ * @param {HTMLElement} piece - The DOM element representing the selected piece.
+ * @param {{dr: number, dc: number}[]} directionArray - Array of direction objects, each with `dr` (delta row) and `dc` (delta column) for movement.
+ *
+ * @returns {void}
+ */
 function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionArray) {
     let moveChoicesCount = 0;
 
@@ -329,6 +436,25 @@ function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionAr
     }
 }
 
+/**
+ * Handles the movement of a piece to the target square.
+ * This includes capturing enemy pieces, updating the board,
+ * and switching turns between players.
+ *
+ * This function performs the following tasks:
+ * - Removes all move indicators and attack highlights.
+ * - Removes all event listeners attached to the handler.
+ * - Moves the piece to the target square.
+ * - Updates the game state, including piece movement and turn changes.
+ *
+ * @param {number} targetRow - The target row where the piece is to be moved.
+ * @param {number} targetCol - The target column where the piece is to be moved.
+ * @param {boolean} isWhite - Indicates if the piece being moved is white.
+ * @param {Array} handlerArray - Array of handler objects used to manage event listeners.
+ * @param {HTMLElement} piece - The DOM element representing the piece being moved.
+ *
+ * @returns {void}
+ */
 moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     const targetSquare = chessboardArray[targetRow][targetCol];
     let attackedPieceName = ifEnemyTakePiece(targetSquare, isWhite);
@@ -345,6 +471,14 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
 
 
 //HELPER FUNCTIONS
+/**
+ * Displays a message to the user in the form of a popup.
+ * The popup appears for 2 seconds before being removed from the DOM.
+ *
+ * @param {string} message - The message to be displayed in the popup.
+ *
+ * @returns {void}
+ */
 function showMessage(message) {
     const msgDiv = document.createElement("div");
     msgDiv.textContent = message;
@@ -352,7 +486,12 @@ function showMessage(message) {
     document.body.appendChild(msgDiv);
     setTimeout(() => msgDiv.remove(), 2000);
 }
-
+/**
+ * Removes all move indicators and attack highlights from the chessboard.
+ * It searches through each square and removes any highlighting or move indicators.
+ *
+ * @returns {void}
+ */
 function RemoveHighlight() {
     chessboardArray.forEach((row) => {
         row.forEach((square) => {
@@ -367,6 +506,12 @@ function RemoveHighlight() {
         });
     });
 }
+/**
+ * Creates a move indicator image element to visually represent a valid move square.
+ * This indicator is appended to the target square during piece movement processing.
+ *
+ * @returns {HTMLElement} - The created move indicator image element.
+ */
 function createMoveIndicator(){
     let moveIndicator = document.createElement("img");  // Create an <img> element
     moveIndicator.src = `img/possibleMove.svg`;  // Image path based on piece name
@@ -375,6 +520,18 @@ function createMoveIndicator(){
     moveIndicator.style.height = "45px"
     return moveIndicator;
 }
+/**
+ * Logs the movement of a piece to the console, including attack actions.
+ * If a piece attacks another piece, it logs the attack with color coding for clarity.
+ *
+ * @param {HTMLElement} piece - The DOM element representing the moved piece.
+ * @param {number} newRow - The target row where the piece has been moved.
+ * @param {number} newCol - The target column where the piece has been moved.
+ * @param {boolean} isAttack - Indicates if the move was an attack.
+ * @param {string|null} attackedPieceName - The name of the piece that was attacked, if any.
+ *
+ * @returns {void}
+ */
 function pieceMoved(piece, newRow, newCol, isAttack, attackedPieceName) {
     let [, pieceName] = piece.src.substring(piece.src.lastIndexOf('/') + 1).match(/^(.*)-[WB]\.svg$/) || [];
     if(isAttack){
@@ -387,17 +544,42 @@ function pieceMoved(piece, newRow, newCol, isAttack, attackedPieceName) {
     pieceSelected = false; //lets you select a piece again
     console.log('  ');
 }
-
+/**
+ * Removes all click event listeners from the handler array.
+ * This is typically used after a move has been processed to clean up event listeners.
+ *
+ * @param {Array} handlerArray - Array of handler objects, each containing a square and a handler function.
+ *
+ * @returns {void}
+ */
 function removeEventAllListeners(handlerArray) {
     handlerArray.forEach(({ square, handler }) => { // Remove all event listeners
         square.removeEventListener('click', handler);
     });
 } // only to be called in move handling functions
+/**
+ * Moves the piece to the target square with a small delay.
+ * The piece is appended to the target square after a short timeout.
+ *
+ * @param {HTMLElement} targetSquare - The square where the piece will be moved to.
+ * @param {HTMLElement} piece - The DOM element representing the piece being moved.
+ *
+ * @returns {void}
+ */
 function movePieceToSquare(targetSquare, piece) {
     setTimeout(() => { // Move the rook to the target square
         targetSquare.appendChild(piece);
     }, 5);
 } // only to be called in move handling functions
+/**
+ * Checks if the target square contains an enemy piece and removes it if so.
+ * If an enemy piece is present, it is removed and its name is returned.
+ *
+ * @param {HTMLElement} targetSquare - The square to check for an enemy piece.
+ * @param {boolean} isWhite - Indicates if the piece being moved is white.
+ *
+ * @returns {string|null} - The name of the captured piece, or null if no piece was captured.
+ */
 function ifEnemyTakePiece(targetSquare, isWhite){
     if (targetSquare.querySelector("img") && isEnemy(targetSquare, isWhite)) { // Capture enemy piece if present
         let pieceName = getPieceName(targetSquare);
@@ -419,6 +601,16 @@ function getPieceName(targetSquare){
 
 
 // development helper functions
+/**
+ * Removes all pawn pieces from the chessboard.
+ *
+ * Iterates through the `chessboardArray` and removes any `<img>` elements
+ * whose `src` includes "pawn".
+ *
+ * allows for piece testing without always having to move the pawns everytime it reloads
+ *
+ * @returns {void}
+ */
 function removeAllPawns() {
     chessboardArray.forEach(row => {
         row.forEach(square => {
