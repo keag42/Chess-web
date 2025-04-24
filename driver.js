@@ -1,6 +1,10 @@
 let pieceSelected = false; // Flag to check if a piece is selected
-let chessboardArray = [];  // Declare it globally
 let moveTurnWhite = true;
+let chessboardArray = [];  // Declare it globally
+let handlerArray = [];
+let roundCounter = 0; // Counter for rounds
+let roundArray = [];
+
 document.addEventListener("DOMContentLoaded", () => {
     const board = document.getElementById("chessboard");
     // Create the chessboard grid and store references in the 2D array
@@ -414,6 +418,7 @@ function singleDirectionMove(currentRow, currentCol, isWhite, piece, directionAr
         const targetSquare = chessboardArray[newRow][newCol];
         const piecePresent = targetSquare.querySelector("img");
         const handler = () => moveHandler(newRow, newCol, isWhite, handlerArray, piece);
+
         if (piecePresent) {
             if (isEnemy(targetSquare, isWhite)) {
                 targetSquare.classList.add("highlight-attack");
@@ -467,6 +472,25 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     pieceSelected = false; // Reset selection flag
 
     moveTurnWhite = !moveTurnWhite; //switch turns
+    roundCounter++;
+
+    //The JSON SAVE::
+    let tempRoundArray = [];
+    for(let i = 0; i < chessboardArray.length; i++){
+        for(let j = 0; j < chessboardArray[i].length; j++){
+            if(chessboardArray[i][j].querySelector("img")){
+                tempRoundArray.push({
+                    "round": roundCounter,
+                    "piece": chessboardArray[i][j].querySelector("img").src,
+                    "position": {
+                        "row": i,
+                        "col": j
+                    }
+                });
+            }
+        }
+    }
+    roundArray.push(tempRoundArray);
 };
 
 
@@ -587,6 +611,14 @@ function ifEnemyTakePiece(targetSquare, isWhite){
         return pieceName;
     }
 } // only to be called in move handling functions
+/**
+ * Checks if the target square contains an enemy piece and removes it if so.
+ * If an enemy piece is present, it is removed and its name is returned.
+ *
+ * @param {HTMLElement} targetSquare - The square to check for an enemy piece.
+ *
+ * @returns {string|null} - The name of the captured piece, or null if no piece was captured.
+ */
 function getPieceName(targetSquare){
     let curTile = targetSquare.querySelector("img");
     if(curTile) {
