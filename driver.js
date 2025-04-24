@@ -45,14 +45,9 @@ function generatePieces(row, col, square) {
         7: ["rook-W", "horse-W", "bishop-W", "queen-W", "king-W", "bishop-W", "horse-W", "rook-W"],  // White pieces row (7)
     };
 
-    // Check if the row has a piece setup
 
     if (pieces[row]) {
-        //   testing
-            //console.log("piece: " + pieces[row]);
-            //console.log("row: " + row);
-            //console.log(`[${row}][${col}]: ` + pieces[row][col]);
-        //   \testing
+
         const piece = pieces[row][col];
         if (piece) {
             const img = document.createElement("img");
@@ -66,7 +61,6 @@ function generatePieces(row, col, square) {
      removeAllPawns();
 }
 //Helper Function Selected Piece, when you select a piece it will start the process of finding its moves
-
 function selectedPiece(currentRow, currentCol) {
     if(pieceSelected) return;
     const curTile = chessboardArray[currentRow][currentCol].querySelector("img"); //current tile
@@ -103,92 +97,52 @@ function isEnemy(targetSquare, isWhite){
 
 function pawnMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true;
+    const moveIndicator = createMoveIndicator();
     let direction = isWhite ? 1 : -1;
-    let moveIndicator= createMoveIndicator();
-    let rightAttack;
-    let leftAttack;
-    let forwardMove;
-    let leftAttackMade = false;
-    let rightAttackMade = false;
-    let moveCounter = 0;
+    let rightSquare;
+    let leftSquare;
+    let forwardSquare;
+    let moveChoicesCount = 0;
 
-
-    if(currentRow + direction >= 0 && currentRow + direction < 8) {
-        forwardMove = chessboardArray[currentRow + direction][currentCol];
-        if (!forwardMove.querySelector("img") && currentRow + direction <= 8 && currentRow + direction >= 0 ) {
-            forwardMove.appendChild(moveIndicator);  // Append the image to the square
-            let forwardMoveFuncHandler = () => forwardMoveFunc();
-            moveIndicator.addEventListener('click', forwardMoveFuncHandler);
-            moveCounter++;
+    // Check left diagonal
+    if (currentCol - 1 >= 0 && currentRow + direction >= 0 && currentRow + direction < 8) {
+        leftSquare = chessboardArray[currentRow + direction][currentCol - 1];
+        if (isEnemy(leftSquare, isWhite)) {
+            let handler = () => moveHandler(currentRow + direction, currentCol - 1, isWhite, handlerArray, piece);
+            leftSquare.classList.add("highlight-attack");
+            leftSquare.addEventListener('click', handler);
+            handlerArray.push({square: leftSquare, handler});
+            moveChoicesCount++;
         }
     }
 
-//if there's no piece in front & its not off the board
-    if(currentRow + direction >= 0 && currentRow + direction < 8) { // if the forward move is on the board
-        if (currentCol + 1 < 8) {
-            rightAttack = chessboardArray[currentRow + direction][currentCol + 1];
-            if (rightAttack.querySelector("img") && isEnemy(rightAttack, isWhite)) {
-                rightAttack.classList.add("highlight-attack");
-                rightAttack.addEventListener('click', rightAttackFunc);
-                moveCounter++;
-                rightAttackMade = true;
-            } //if space is not empty and it's an enemy piece
-        }
-        if (currentCol - 1 >= 0) {
-            leftAttack = chessboardArray[currentRow + direction][currentCol - 1];
-            if (leftAttack.querySelector("img") && isEnemy(leftAttack, isWhite)) {
-                leftAttack.classList.add("highlight-attack");
-                leftAttack.addEventListener('click', leftAttackFunc);
-                moveCounter++;
-                leftAttackMade = true;
-            } //if space is not empty and it's an enemy piece
+    // Check right diagonal
+    if (currentCol + 1 < 8 && currentRow + direction >= 0 && currentRow + direction < 8) {
+        rightSquare = chessboardArray[currentRow + direction][currentCol + 1];
+        if (isEnemy(rightSquare, isWhite)) {
+            let handler = () => moveHandler(currentRow + direction, currentCol + 1, isWhite, handlerArray, piece);
+            rightSquare.classList.add("highlight-attack");
+            rightSquare.addEventListener('click', handler);
+            handlerArray.push({square: rightSquare, handler});
+            moveChoicesCount++;
         }
     }
-    if(moveCounter === 0){
+
+    // Check forward move
+    if (currentRow + direction >= 0 && currentRow + direction < 8) {
+        forwardSquare = chessboardArray[currentRow + direction][currentCol];
+        if (!forwardSquare.querySelector("img")) {
+            let handler = () => moveHandler(currentRow + direction, currentCol, isWhite, handlerArray, piece);
+            forwardSquare.appendChild(moveIndicator);
+            forwardSquare.addEventListener('click', handler);
+            handlerArray.push({square: forwardSquare, handler});
+            moveChoicesCount++;
+        }
+    }
+
+    if(moveChoicesCount === 0){
         pieceSelected = false;
         console.log("%cThis piece has no where to go..", 'color: red;');
-    }
-
-    function pawnMoved(){
-        console.log(`%cPawn moved to [${currentRow + direction}, ${currentCol + 1}]`, 'color: lightgreen;');
-        RemoveHighlight();
-        removeEventListeners()
-        pieceSelected = false; //lets you select a piece again
-        console.log('  ');
-    }
-    function forwardMoveFunc (){
-        forwardMove.removeChild(moveIndicator); // this removes the indicator on the square
-        setTimeout(() => {
-            forwardMove.appendChild(piece);
-            // console.log("Pawn moved after delay...");
-        }, 5);// adds timer so that you don't click the pawn at the same time
-         pawnMoved();
-    }
-    function rightAttackFunc (){
-        this.removeChild(rightAttack.querySelector("img"));
-        this.appendChild(piece); // Move the pawn to the target square
-        console.log("Pawn takes: ?");
-        pawnMoved();
-    }
-    function leftAttackFunc (){
-            this.removeChild(leftAttack.querySelector("img"));
-            this.appendChild(piece); // Move the pawn to the target square
-            console.log("Pawn takes: ?");
-            pawnMoved();
-    }
-    function removeEventListeners() {
-        // Remove listeners for forward move
-        forwardMove.removeEventListener('click', forwardMoveFunc);
-
-        // Remove listeners for right attack
-        if(rightAttackMade) {
-            rightAttack.removeEventListener('click', rightAttackFunc);
-        }
-
-        // Remove listeners for left attack
-        if(leftAttackMade) {
-            leftAttack.removeEventListener('click', leftAttackFunc);
-        }
     }
 }
 /**
