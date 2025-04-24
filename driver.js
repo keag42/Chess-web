@@ -150,18 +150,11 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
 
         if (currentRow === firstSquare) {
             // Calculate position two squares ahead
-            console.log("depth of 1");
             const twoSquaresAhead = currentRow + (2 * direction);
             if (twoSquaresAhead >= 0 && twoSquaresAhead < 8) {
                 forwardJump = chessboardArray[twoSquaresAhead][currentCol];
-                console.log("depth of 2");
-
                 // Ensure both squares are empty
-                console.log("1: ", !forwardSquare.querySelector("img"))
-                console.log("2: ", !forwardJump.querySelector("img"))
                 if ((!forwardSquare.querySelector("img") || isLegal) && !forwardJump.querySelector("img")) {
-                    console.log("depth of 3");
-
                     let handler = () => moveHandler(twoSquaresAhead, currentCol, isWhite, handlerArray, piece);
                     forwardJump.appendChild(moveIndicator.cloneNode(true)); // Use clone of moveIndicator
                     forwardJump.addEventListener('click', handler);
