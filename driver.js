@@ -474,7 +474,38 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     moveTurnWhite = !moveTurnWhite; //switch turns
     roundCounter++;
 
-    //The JSON SAVE::
+    saveJSON(); // save json func
+}
+
+
+//HELPER FUNCTIONS
+/**
+ * Saves the current state of the chessboard by capturing information about all pieces
+ * and their positions in a specific round.
+ * 
+ * The function performs the following operations:
+ * 1. Creates a temporary array to store the current board state
+ * 2. Iterates through the entire chessboard array (8x8)
+ * 3. For each square containing a piece:
+ *    - Records the current round number
+ *    - Captures the piece's image source (which indicates piece type and color)
+ *    - Stores the piece's position (row and column)
+ * 4. Adds the complete board state to the main roundArray
+ * 
+ * @function saveJSON
+ * 
+ * @global {Array} chessboardArray - 2D array representing the chessboard
+ * @global {number} roundCounter - Current round number in the game
+ * @global {Array} roundArray - Array storing the history of board states
+ * 
+ * @example
+ * // After a piece moves
+ * saveJSON();
+ * // This will add an array of all piece positions to roundArray
+ * 
+ * @returns {void}
+ */
+function saveJSON() {
     let tempRoundArray = [];
     for(let i = 0; i < chessboardArray.length; i++){
         for(let j = 0; j < chessboardArray[i].length; j++){
@@ -491,10 +522,7 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
         }
     }
     roundArray.push(tempRoundArray);
-};
-
-
-//HELPER FUNCTIONS
+}
 /**
  * Displays a message to the user in the form of a popup.
  * The popup appears for 2 seconds before being removed from the DOM.
