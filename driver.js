@@ -5,6 +5,7 @@ let handlerArray = [];
 let roundCounter = 0; // Counter for rounds
 let roundArray = [];
 
+// CNTRL+SHIFT+'-' to close all functions
 document.addEventListener("DOMContentLoaded", () => {
     const board = document.getElementById("chessboard");
     // Create the chessboard grid and store references in the 2D array
@@ -97,14 +98,17 @@ function isEnemy(targetSquare, isWhite){
 
 function pawnMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true;
-    const moveIndicator = createMoveIndicator();
+    const moveIndicator = createMoveIndicator(); // Reuse moveIndicator
     let direction = isWhite ? 1 : -1;
+    let firstSquare = isWhite ? 1 : 6;  // Correct starting positions for pawns
+    let isLegal = false;
     let rightSquare;
     let leftSquare;
     let forwardSquare;
+    let forwardJump;
     let moveChoicesCount = 0;
 
-    // Check left diagonal
+    // Check left diagonal (capture enemy piece)
     if (currentCol - 1 >= 0 && currentRow + direction >= 0 && currentRow + direction < 8) {
         leftSquare = chessboardArray[currentRow + direction][currentCol - 1];
         if (isEnemy(leftSquare, isWhite)) {
@@ -116,7 +120,7 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
         }
     }
 
-    // Check right diagonal
+    // Check right diagonal (capture enemy piece)
     if (currentCol + 1 < 8 && currentRow + direction >= 0 && currentRow + direction < 8) {
         rightSquare = chessboardArray[currentRow + direction][currentCol + 1];
         if (isEnemy(rightSquare, isWhite)) {
@@ -128,7 +132,7 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
         }
     }
 
-    // Check forward move
+    // Check single forward move
     if (currentRow + direction >= 0 && currentRow + direction < 8) {
         forwardSquare = chessboardArray[currentRow + direction][currentCol];
         if (!forwardSquare.querySelector("img")) {
@@ -136,11 +140,40 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
             forwardSquare.appendChild(moveIndicator);
             forwardSquare.addEventListener('click', handler);
             handlerArray.push({square: forwardSquare, handler});
+            isLegal = true;
             moveChoicesCount++;
         }
     }
 
-    if(moveChoicesCount === 0){
+    // Check two-square forward move (pawn jump)
+
+
+        if (currentRow === firstSquare) {
+            // Calculate position two squares ahead
+            console.log("depth of 1");
+            const twoSquaresAhead = currentRow + (2 * direction);
+            if (twoSquaresAhead >= 0 && twoSquaresAhead < 8) {
+                forwardJump = chessboardArray[twoSquaresAhead][currentCol];
+                console.log("depth of 2");
+
+                // Ensure both squares are empty
+                console.log("1: ", !forwardSquare.querySelector("img"))
+                console.log("2: ", !forwardJump.querySelector("img"))
+                if ((!forwardSquare.querySelector("img") || isLegal) && !forwardJump.querySelector("img")) {
+                    console.log("depth of 3");
+
+                    let handler = () => moveHandler(twoSquaresAhead, currentCol, isWhite, handlerArray, piece);
+                    forwardJump.appendChild(moveIndicator.cloneNode(true)); // Use clone of moveIndicator
+                    forwardJump.addEventListener('click', handler);
+                    handlerArray.push({square: forwardJump, handler});
+                    moveChoicesCount++;
+                    isLegal = false;
+                }
+            }
+        }
+
+    // If no moves are available
+    if (moveChoicesCount === 0) {
         pieceSelected = false;
         console.log("%cThis piece has no where to go..", 'color: red;');
     }
@@ -288,7 +321,7 @@ function horseMove(currentRow, currentCol, isWhite, piece){
 
 
 // MOVEMENT HELPERS
-let handlerArray = [];
+
 /**
  * Handles movement logic for pieces that can move multiple steps in a direction,
  * such as rooks, bishops, and queens.
