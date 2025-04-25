@@ -449,7 +449,7 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     movePieceToSquare(targetSquare, piece);
     pieceMoved(piece, targetRow, targetCol, isAttack, attackedPieceName);
     console.log(piece.src);
-    if(piece.src === "http://localhost:63342/chessHtmlCss/img/pawn-W.svg" || piece.src === "http://localhost:63342/chessHtmlCss/img/pawn-B.svg") {
+    if(piece.src.endsWith("pawn-W.svg") || piece.src.endsWith("pawn-B.svg")) {
         pawnPromotion(targetRow, piece, isWhite);
     }
     pieceSelected = false; // Reset selection flag
