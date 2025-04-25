@@ -58,8 +58,7 @@ function generatePieces(row, col, square) {
         }
     }
 
-    //TODO FOR TESTING ONLY.
-     removeAllPawns();
+     // removeAllPawns(); //TODO FOR TESTING ONLY.
 }
 //Helper Function Selected Piece, when you select a piece it will start the process of finding its moves
 function selectedPiece(currentRow, currentCol) {
@@ -73,9 +72,9 @@ function selectedPiece(currentRow, currentCol) {
         const fileName = url.substring(url.lastIndexOf('/') + 1); // e.g., "king-W.svg"
         // This regex captures the piece name and a single letter for color (W or B)
         const match = fileName.match(/^(.*)-([WB])\.svg$/);
-        isWhite =  url.endsWith("B.svg");
+        isWhite =  url.endsWith("W.svg");
 
-        if(isWhite === !moveTurnWhite) {
+        if(isWhite === moveTurnWhite) {
             if (match) pieceName = match[1];
             else console.error("Filename does not match expected pattern:", fileName);
             window[`${pieceName}Move`](currentRow, currentCol, isWhite, curTile);
@@ -89,7 +88,7 @@ function selectedPiece(currentRow, currentCol) {
 function isEnemy(targetSquare, isWhite){
     let targetPiece = targetSquare.querySelector("img");
     if(targetPiece) { //checks if it is empty
-        if(targetPiece.src.endsWith("W.svg") === isWhite){
+        if(targetPiece.src.endsWith("W.svg") !== isWhite){
             return true;
         }
     }
@@ -99,8 +98,8 @@ function isEnemy(targetSquare, isWhite){
 function pawnMove(currentRow, currentCol, isWhite, piece) {
     pieceSelected = true;
     const moveIndicator = createMoveIndicator(); // Reuse moveIndicator
-    let direction = isWhite ? 1 : -1;
-    let firstSquare = isWhite ? 1 : 6;  // Correct starting positions for pawns
+    let direction = isWhite ? -1 : 1;
+    let firstSquare = isWhite ? 6 : 1;  // Correct starting positions for pawns
     let isLegal = false;
     let rightSquare;
     let leftSquare;
@@ -117,6 +116,7 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
             leftSquare.addEventListener('click', handler);
             handlerArray.push({square: leftSquare, handler});
             moveChoicesCount++;
+            pawnPromotion(currentRow + direction);
         }
     }
 
@@ -129,6 +129,7 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
             rightSquare.addEventListener('click', handler);
             handlerArray.push({square: rightSquare, handler});
             moveChoicesCount++;
+            pawnPromotion(currentRow + direction); // Check for pawn promotion
         }
     }
 
@@ -142,12 +143,11 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
             handlerArray.push({square: forwardSquare, handler});
             isLegal = true;
             moveChoicesCount++;
+            pawnPromotion(currentRow + direction); // Check for pawn promotion
         }
     }
 
     // Check two-square forward move (pawn jump)
-
-
         if (currentRow === firstSquare) {
             // Calculate position two squares ahead
             const twoSquaresAhead = currentRow + (2 * direction);
@@ -164,6 +164,98 @@ function pawnMove(currentRow, currentCol, isWhite, piece) {
                 }
             }
         }
+
+function pawnPromotion(row) {
+    // Check if promotion dialog already exists
+    if (document.querySelector(".promotion-overlay")) {
+        return; // Exit if already open
+    }
+
+    if (row === 0 || row === 7) {
+        // Create the overlay
+        const overlay = document.createElement("div");
+        overlay.classList.add("promotion-overlay");
+        overlay.style.position = "fixed";
+        overlay.style.top = "0";
+        overlay.style.left = "0";
+        overlay.style.width = "100vw";
+        overlay.style.height = "100vh";
+        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
+        overlay.style.zIndex = "99";
+
+        // Create the promotion menu
+        const promotionDiv = document.createElement("div");
+        promotionDiv.classList.add("promotion");
+        promotionDiv.style.position = "fixed";
+        promotionDiv.style.top = "50%";
+        promotionDiv.style.left = "50%";
+        promotionDiv.style.transform = "translate(-50%, -50%)";
+        promotionDiv.style.backgroundColor = "white";
+        promotionDiv.style.padding = "20px";
+        promotionDiv.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+        promotionDiv.style.borderRadius = "8px";
+        promotionDiv.style.textAlign = "center";
+        promotionDiv.style.zIndex = "100";
+
+        // Add content inside the promotion menu
+        promotionDiv.innerHTML = `
+            <h2 style="margin-bottom: 20px;">Promote your pawn!</h2>
+            <button class="promotion-button" data-piece="queen" style="
+                margin: 5px;
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #769656;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;">Queen</button>
+            <button class="promotion-button" data-piece="rook" style="
+                margin: 5px;
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #769656;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;">Rook</button>
+            <button class="promotion-button" data-piece="bishop" style="
+                margin: 5px;
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #769656;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;">Bishop</button>
+            <button class="promotion-button" data-piece="horse" style="
+                margin: 5px;
+                padding: 10px 20px;
+                font-size: 16px;
+                background-color: #769656;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;">Knight</button>
+        `;
+
+        // Add the promotion menu to the overlay
+        overlay.appendChild(promotionDiv);
+
+        // Append the overlay to the document body
+        document.body.appendChild(overlay);
+
+        // Add event listeners to the buttons
+        const buttons = promotionDiv.querySelectorAll(".promotion-button");
+        buttons.forEach(button => {
+            button.addEventListener("click", () => {
+                const newPiece = button.dataset.piece;
+                piece.src = `img/${newPiece}-${isWhite ? "W" : "B"}.svg`;
+                // Remove the overlay and menu after selection
+                document.body.removeChild(overlay);
+            });
+        });
+    }
+}
 
     // If no moves are available
     if (moveChoicesCount === 0) {
@@ -627,18 +719,17 @@ function ifEnemyTakePiece(targetSquare, isWhite){
  *
  * @returns {string|null} - The name of the captured piece, or null if no piece was captured.
  */
-function getPieceName(targetSquare){
+function getPieceName(targetSquare) {
     let curTile = targetSquare.querySelector("img");
-    if(curTile) {
+    if (curTile) {
         let url = curTile.src;
         const fileName = url.substring(url.lastIndexOf('/') + 1); // e.g., "king-W.svg"
         // This regex captures the piece name and a single letter for color (W or B)
         const match = fileName.match(/^(.*)-([WB])\.svg$/);
-        if(match) return match[1];
-        else console.error("Filename does not match expected pattern:", fileName);
+        if (match) return match[1];
+        //else console.error("Filename does not match expected pattern:", fileName);
     }//checks if not empty
 }
-
 
 // development helper functions
 /**
