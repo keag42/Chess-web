@@ -448,18 +448,16 @@ moveHandler = (targetRow, targetCol, isWhite, handlerArray, piece) => {
     removeEventAllListeners(handlerArray);
     movePieceToSquare(targetSquare, piece);
     pieceMoved(piece, targetRow, targetCol, isAttack, attackedPieceName);
-    console.log(piece.src);
     if(piece.src.endsWith("pawn-W.svg") || piece.src.endsWith("pawn-B.svg")) {
         pawnPromotion(targetRow, piece, isWhite);
     }
     pieceSelected = false; // Reset selection flag
-
+    document.getElementById("turn").innerHTML = `Turn: ${moveTurnWhite ?  "Black" : "White" }`;
     moveTurnWhite = !moveTurnWhite; //switch turns
     roundCounter++;
 
     saveJSON(); // save json func
 }
-
 
 //HELPER FUNCTIONS
 /**
@@ -643,77 +641,29 @@ function getPieceName(targetSquare) {
 }
 
 function pawnPromotion(row, piece, isWhite) {
-    // Check if promotion dialog already exists
+    // Check if a promotion dialog is already open
     if (document.querySelector(".promotion-overlay")) {
         return; // Exit if already open
     }
 
+    // Only trigger promotion if the pawn reaches the last row
     if (row === 0 || row === 7) {
         // Create the overlay
         const overlay = document.createElement("div");
         overlay.classList.add("promotion-overlay");
-        overlay.style.position = "fixed";
-        overlay.style.top = "0";
-        overlay.style.left = "0";
-        overlay.style.width = "100vw";
-        overlay.style.height = "100vh";
-        overlay.style.backgroundColor = "rgba(0, 0, 0, 0.6)";
-        overlay.style.zIndex = "99";
 
         // Create the promotion menu
         const promotionDiv = document.createElement("div");
         promotionDiv.classList.add("promotion");
-        promotionDiv.style.position = "fixed";
-        promotionDiv.style.top = "50%";
-        promotionDiv.style.left = "50%";
-        promotionDiv.style.transform = "translate(-50%, -50%)";
-        promotionDiv.style.backgroundColor = "white";
-        promotionDiv.style.padding = "20px";
-        promotionDiv.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
-        promotionDiv.style.borderRadius = "8px";
-        promotionDiv.style.textAlign = "center";
-        promotionDiv.style.zIndex = "100";
 
-        // Add content inside the promotion menu
+        // Create inner HTML for the promotion menu
         promotionDiv.innerHTML = `
-                <h2 style="margin-bottom: 20px;">Promote your pawn!</h2>
-                <button class="promotion-button" data-piece="queen" style="
-                    margin: 5px;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    background-color: #769656;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;">Queen</button>
-                <button class="promotion-button" data-piece="rook" style="
-                    margin: 5px;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    background-color: #769656;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;">Rook</button>
-                <button class="promotion-button" data-piece="bishop" style="
-                    margin: 5px;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    background-color: #769656;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;">Bishop</button>
-                <button class="promotion-button" data-piece="horse" style="
-                    margin: 5px;
-                    padding: 10px 20px;
-                    font-size: 16px;
-                    background-color: #769656;
-                    color: white;
-                    border: none;
-                    border-radius: 4px;
-                    cursor: pointer;">Knight</button>
-            `;
+            <h2>Promote your pawn!</h2>
+            <button class="promotion-button" data-piece="queen">Queen</button>
+            <button class="promotion-button" data-piece="rook">Rook</button>
+            <button class="promotion-button" data-piece="bishop">Bishop</button>
+            <button class="promotion-button" data-piece="horse">Knight</button>
+        `;
 
         // Add the promotion menu to the overlay
         overlay.appendChild(promotionDiv);
@@ -727,12 +677,13 @@ function pawnPromotion(row, piece, isWhite) {
             button.addEventListener("click", () => {
                 const newPiece = button.dataset.piece;
                 piece.src = `img/${newPiece}-${isWhite ? "W" : "B"}.svg`;
-                // Remove the overlay and menu after selection
+                // Remove the overlay after a selection is made
                 document.body.removeChild(overlay);
             });
         });
     }
 }
+
 // development helper functions
 /**
  * Removes all pawn pieces from the chessboard.

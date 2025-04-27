@@ -1,0 +1,41 @@
+/* Overlay background for promotion */
+.promotion-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+}
+
+/* Promotion pop-up box */
+.promotion {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    text-align: center;
+    z-index: 100;
+}
+
+/* Title inside the promotion pop-up */
+.promotion h2 {
+    margin-bottom: 20px;
+}
+
+/* Buttons inside the promotion pop-up */
+.promotion-button {
+    margin: 5px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #769656;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
