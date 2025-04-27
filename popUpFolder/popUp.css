@@ -1,0 +1,67 @@
+/* Basic styling for popups and overlay */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.6);
+    z-index: 99;
+}
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    text-align: center;
+    z-index: 100;
+}
+
+/* General popup button styling */
+.popup button {
+    margin-top: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #769656;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    margin-right: 5px;
+}
+
+.popup button:hover {
+    background-color: #5a7e4b;
+}
+
+/* Styling for menu items */
+.popup ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.popup li {
+    margin: 5px 0;
+}
+
+/* Close button specific styling */
+.popup button.close-btn {
+    margin-top: 20px;
+    background-color: darkred;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease; /* Smooth transitions */
+}
+
+.popup button.close-btn:hover {
+    background-color: red;
+    transform: scale(1.05);
+}
