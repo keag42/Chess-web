@@ -1,0 +1,10 @@
+#settings{
+    position: absolute; /* or fixed if you want it to stay fixed when scrolling */
+    top: 30px; /* Adjust to place it near the top */
+    right: 30px; /* Adjust to place it near the right edge */
+    background-color: #769656;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
