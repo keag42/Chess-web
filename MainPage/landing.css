@@ -1,0 +1,38 @@
+body{
+    margin: 0;
+    padding: 0;
+    background-color: #f0d9b5;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.ChessContainer{
+    text-align: center;
+}
+
+h1{
+    margin-bottom: 40px;
+    color: #769656 /*A shade of Green (sure isnt dark ;p)*/
+}
+
+.button-group .button{
+
+    display: block;
+    margin: 50px;
+    font-size:  15px;
+    background-color: #769656;
+    border-radius: 50px;
+    padding: 15px;
+    text-align: center;
+    text-decoration: none;
+    color: white;
+    transition: background-color 0.3s, transform 0.5s;
+
+}
+
+.button-group .button:hover{
+    background-color: #769656;
+    transform: translateY(-5px); 
+}
